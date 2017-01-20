@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.12: http://docutils.sourceforge.net/" />
+<title>libtorrent manual</title>
+<meta name="author" content="Arvid Norberg, arvid&#64;libtorrent.org" />
+<meta name=viewport content="width=device-width, initial-scale=1">
+<script type="text/javascript">
+/* <![CDATA[ */
+    (function() {
+        var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+        t.parentNode.insertBefore(s, t);
+    })();
+/* ]]> */
+</script>
+<link rel="stylesheet" href="style.css" type="text/css" />
+<link rel="stylesheet" type="text/css" href="rst.css" />
+<style type="text/css">
+/* Hides from IE-mac \*/
+* html pre { height: 1%; }
+/* End hide from IE-mac */
+</style>
+</head>
+<body>
+<div class="document" id="libtorrent-manual">
+    <div id="container">
+    <table id="header">
+    <tr><td id="orange"></td>
+    <td id="logo">libtorrent</td></tr>
+    </table>
+    <div id="main">
+<h1 class="title">libtorrent manual</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Author:</th>
+<td>Arvid Norberg, <a class="last reference external" href="mailto:arvid&#64;libtorrent.org">arvid&#64;libtorrent.org</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>1.0.10</td></tr>
+</tbody>
+</table>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title first">Table of contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#introduction" id="id2">introduction</a></li>
+<li><a class="reference internal" href="#features" id="id3">features</a><ul>
+<li><a class="reference internal" href="#extensions" id="id4">extensions</a></li>
+<li><a class="reference internal" href="#disk-management" id="id5">disk management</a></li>
+<li><a class="reference internal" href="#network" id="id6">network</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#highlighted-features" id="id7">highlighted features</a><ul>
+<li><a class="reference internal" href="#disk-caching" id="id8">disk caching</a></li>
+<li><a class="reference internal" href="#high-performance-disk-subsystem" id="id9">high performance disk subsystem</a></li>
+<li><a class="reference internal" href="#network-buffers" id="id10">network buffers</a></li>
+<li><a class="reference internal" href="#piece-picker" id="id11">piece picker</a></li>
+<li><a class="reference internal" href="#share-mode" id="id12">share mode</a></li>
+<li><a class="reference internal" href="#merkle-hash-tree-torrents" id="id13">merkle hash tree torrents</a></li>
+<li><a class="reference internal" href="#customizable-file-storage" id="id14">customizable file storage</a></li>
+<li><a class="reference internal" href="#easy-to-use-api" id="id15">easy to use API</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#portability" id="id16">portability</a></li>
+</ul>
+</div>
+<div class="section" id="introduction">
+<h1>introduction (引言)</h1>
+<p>libtorrent is a feature complete C++ bittorrent implementation focusing
+on efficiency and scalability. It runs on embedded devices as well as
+desktops. It boasts a well documented library interface that is easy to
+use. It comes with a simple bittorrent client demonstrating the use of
+the library.</p>
+<p><font color="#0000E3">libtorrent 是 C++ 的 bittorrent 实现,它有丰富的特性,力求高效可扩展.它可以运行在嵌入式设备上以及桌面系统上,有完善的接口文档便于使用.libtorrent 提供了一个简单的例程<a class="reference external" href="client_test.html"> simple bittorrent client </a>来说明如何使用 libtorrent 库.</font></p>
+</div>
+<div class="section" id="features">
+<h1>features (特性)</h1>
+<p>libtorrent is under active development. It is an ongoing project. Its
+current state supports and includes the following features:</p>
+<p><font color="#0000E3">libtorrent 目前处于活跃状态.它是一个不断发展的项目.目前支持以下特性:</font></p>
+<div class="section" id="extensions">
+<h2>extensions (扩展)</h2>
+<ul class="simple">
+<li>plugin interface for implementing custom bittorrent extensions
+without having to modify libtorrent</li>
+<li><font color="#0000E3">通过插件接口可以实现 bittorrent 的扩展且无需修改 libtorrent 代码</font></li>
+<li>supports trackerless torrents (using the Mainline kademlia DHT protocol) with
+some <a class="reference external" href="dht_extensions.html">DHT extensions</a>. <a class="reference external" href="http://bittorrent.org/beps/bep_0005.html">BEP 5</a>.</li>
+<li><font color="#0000E3">支持无 tracker 模式 torrents (使用Mainline kademlia DHT 协议)通过使用<a class="reference external" href="dht_extensions.html">DHT扩展</a>. <a class="reference external" href="http://bittorrent.org/beps/bep_0005.html">BEP 5</a></font>.</li>
+<li>supports the bittorrent <a class="reference external" href="extension_protocol.html">extension protocol</a>. See <a class="reference external" href="manual-ref.html#extensions">extensions</a>. <a class="reference external" href="http://bittorrent.org/beps/bep_0010.html">BEP 10</a>.</li>
+<li><font color="#0000E3">支持 bittorrent <a class="reference external" href="extension_protocol.html">扩展协议</a>. 详见<a class="reference external" href="manual-ref.html#extensions">extensions</a>. <a class="reference external" href="http://bittorrent.org/beps/bep_0010.html">BEP 10</a></font>.</li>
+<li>supports the uTorrent metadata transfer protocol <a class="reference external" href="http://bittorrent.org/beps/bep_0009.html">BEP 9</a> (i.e. magnet links).</li>
+<li><font color="#0000E3">支持 uTorrent 元数据传输协议<a class="reference external" href="http://bittorrent.org/beps/bep_0009.html">BEP 9</a> (i.e. 磁力链接)</font>.</li>
+<li>supports the uTorrent peer exchange protocol (PEX).</li>
+<li><font color="#0000E3">支持 uTorrent Peer 交换协议(PEX)</font>.</li>
+<li>supports local peer discovery (multicasts for peers on the same local network)</li>
+<li><font color="#0000E3">支持本地 Peer 发现(在相同的本地网络 Peers 可以进行组播)</font></li>
+<li>multitracker extension support (supports both strict <a class="reference external" href="http://bittorrent.org/beps/bep_0012.html">BEP 12</a> and the
+uTorrent interpretation).</li>
+<li><font color="#0000E3">多 tracker 扩展支持(支持严格按照 bittorrent 协议的实现<a class="reference external" href="http://bittorrent.org/beps/bep_0012.html">BEP 12</a>以及
+uTorrent的实现)</font>.</li>
+<li>tracker scrapes</li>
+<li><font color="#0000E3">tracker scrapes</font></li>
+<li>supports lt_trackers extension, to exchange trackers between peers</li>
+<li><font color="#0000E3">支持 lt_trackers 扩展,可以在 Peers 之间交换 trackers</font></li>
+<li><a class="reference external" href="manual-ref.html#http-seeding">HTTP seeding</a>, as specified in <a class="reference external" href="http://bittorrent.org/beps/bep_0017.html">BEP 17</a> and <a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a>.</li>
+<li><font color="#0000E3"><a class="reference external" href="manual-ref.html#http-seeding">HTTP 做种</a>,详见<a class="reference external" href="http://bittorrent.org/beps/bep_0017.html">BEP 17</a>以及<a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a></font>.</li>
+<li>supports the udp-tracker protocol. (<a class="reference external" href="http://bittorrent.org/beps/bep_0015.html">BEP 15</a>).</li>
+<li><font color="#0000E3">支持 udp-tracker 协议.(<a class="reference external" href="http://bittorrent.org/beps/bep_0015.html">BEP 15</a>)</font>.</li>
+<li>supports the <tt class="docutils literal">no_peer_id=1</tt> extension that will ease the load off trackers.</li>
+<li><font color="#0000E3">支持<tt class="docutils literal"> no_peer_id=1 </tt>扩展来减轻 trackers 的负载.</font></li>
+<li>supports the <tt class="docutils literal">compact=1</tt> tracker parameter.</li>
+<li><font color="#0000E3">支持<tt class="docutils literal"> compact=1 </tt>tracker 参数</font>.</li>
+<li>super seeding/initial seeding (<a class="reference external" href="http://bittorrent.org/beps/bep_0016.html">
+BEP 16</a>).</li>
+<li><font color="#0000E3">超级做种/初始做种 (<a class="reference external" href="http://bittorrent.org/beps/bep_0016.html">
+BEP 16</a>)</font>.</li>
+<li>private torrents (<a class="reference external" href="http://bittorrent.org/beps/bep_0027.html">BEP 27</a>).</li>
+<li><font color="#0000E3">私有torrents (<a class="reference external" href="http://bittorrent.org/beps/bep_0027.html">BEP 27</a>)</font>.</li>
+<li>upload-only extension (<a class="reference external" href="http://bittorrent.org/beps/bep_0021.html">BEP 21</a>).</li>
+<li><font color="#0000E3">upload-only扩展 (<a class="reference external" href="http://bittorrent.org/beps/bep_0021.html">BEP 21</a>)</font>.</li>
+<li>support for IPv6, including <a class="reference external" href="http://bittorrent.org/beps/bep_0007.html">BEP 7</a> and <a class="reference external" href="http://bittorrent.org/beps/bep_0024.html">BEP 24</a>.</li>
+<li><font color="#0000E3">支持IPv6, 包括 <a class="reference external" href="http://bittorrent.org/beps/bep_0007.html">BEP 7</a> 以及 <a class="reference external" href="http://bittorrent.org/beps/bep_0024.html">BEP 24</a></font>.</li>
+<li>support for merkle hash tree torrents. This makes the size of torrent files
+scale well with the size of the content.</li>
+<li><font color="#0000E3">支持 Merkle 哈希树 torrents. 这大大减少了 torrent 文件的大小</font>.</li>
+<li>share-mode. This is a special mode torrents can be put in to optimize share
+ratio rather than downloading the torrent.</li>
+<li><font color="#0000E3">share-mode. 该模式专用于优化 torrents 的分享率而不是下载</font>.</li>
+</ul>
+</div>
+<div class="section" id="disk-management">
+<h2>disk management (磁盘管理)</h2>
+<ul class="simple">
+<li>uses a separate disk I/O thread to not have the disk ever block on network or
+client interaction. (see <a class="reference external" href="manualref.html#threads">threads</a>).</li>
+<li><font color="#0000E3">使用单独的磁盘 I/O 线程来避免阻塞网络传输或者客户端的交互. (详见 <a class="reference external" href="manualref.html#threads">threads</a>)</font>.</li>
+<li>supports files &gt; 2 gigabytes.</li>
+<li><font color="#0000E3">支持大于2GB的文件</font>.</li>
+<li>fast resume support, a way to get rid of the costly piece check at the
+start of a resumed torrent. Saves the storage state, piece_picker state
+as well as all local peers in a separate fast-resume file.</li>
+<li><font color="#0000E3">快速 resume 支持, 这种方式可以避免在 torrent resume 的时候耗费高昂的分片校验代价. 保存 storage 状态, piece_picker 状态以及所有的 local peers 到一个单独的文件中 (fast-resume 文件).</font></li>
+<li>has an adjustable read and write disk cache for improved disk throughput.</li>
+<li><font color="#0000E3">拥有可配置的磁盘读写缓存来提高磁盘吞吐量</font>.</li>
+<li>queues torrents for file check, instead of checking all of them in parallel.</li>
+<li><font color="#0000E3">可以以队列的模式进行 torrents 校验, 而非并行的</font>.</li>
+<li>does not have any requirements on the piece order in a torrent that it
+resumes. This means it can resume a torrent downloaded by any client.</li>
+<li><font color="#0000E3">torrent resume 的时候不要求分片有序. 这意味着任何一个客户端都可以在下载的时候 resume torrent</font>.</li>
+<li>seed mode, where the files on disk are assumed to be complete, and each
+piece's hash is verified the first time it is requested.</li>
+<li><font color="#0000E3">支持做种模式, 假定 torrent 包含的文件已经下载完成, 而且每个分片的哈希已经在第一次请求完成时校验通过的话</font>.</li>
+</ul>
+</div>
+<div class="section" id="network">
+<h2>network (网络)</h2>
+<ul class="simple">
+<li>a high quality uTP implementation (<a class="reference external" href="http://bittorrent.org/beps/bep_0029.html">BEP 29</a>). A transport protocol with
+delay based congestion control. See separate <a class="reference external" href="utp.html">article</a>.</li>
+<li><font color="#0000E3">一个高质量的 uTP 实现 (<a class="reference external" href="http://bittorrent.org/beps/bep_0029.html">BEP 29</a>). 一个包含延迟基于拥塞控制的传输协议. 详见单独的 <a class="reference external" href="utp.html">文章</a>.</font></li>
+<li>adjusts the length of the request queue depending on download rate.</li>
+<li><font color="#0000E3">根据下载速率来调节请求队列的大小</font>.</li>
+<li>serves multiple torrents on a single port and in a single thread</li>
+<li><font color="#0000E3">多个 torrents 可以在单个端口下和单个线程内提供服务</font></li>
+<li>piece picking on block-level (as opposed to piece-level).
+This means it can download parts of the same piece from different peers.
+It will also prefer to download whole pieces from single peers if the
+download speed is high enough from that particular peer.</li>
+<li><font color="#0000E3">block-level (分块级别) 的分片选择 (相对的有 piece-level (分片级别)).
+这意味着可以从不同客户端下载同一个分片的某些部分. 不过, 会更倾向于从单一的 Peer 下载完整的分片, 如果下载速度比特殊的 Peer 快得多的话</font>.</li>
+<li>supports http proxies and basic proxy authentication</li>
+<li><font color="#0000E3">支持 HTTP 代理和基本的代理认证</font></li>
+<li>supports gzipped tracker-responses</li>
+<li><font color="#0000E3">tracker-responses 支持 GZIP 压缩</font></li>
+<li>can limit the upload and download bandwidth usage and the maximum number of
+unchoked peers</li>
+<li><font color="#0000E3">可以限制上传和下载的带宽使用以及 Unchoked Peers 的最大值</font></li>
+<li>possibility to limit the number of connections.</li>
+<li><font color="#0000E3">限制连接数成为可能</font>.</li>
+<li>delays have messages if there's no other outgoing traffic to the peer, and
+doesn't send have messages to peers that already has the piece. This saves
+bandwidth.</li>
+<li><font color="#0000E3">如果没有其他对外的 Peer 通信的话, 延迟发送 Have 消息, 而且不发送 Have 消息给已经拥有 Piece 的 Peers. 这样可以节省带宽</font>.</li>
+<li>selective downloading. The ability to select which parts of a torrent you
+want to download.</li>
+<li><font color="#0000E3">选择性的下载. 该功能可以选择下载你想要的 torrent 的某些部分.</font></li>
+<li>ip filter to disallow ip addresses and ip ranges from connecting and
+being connected.</li>
+<li><font color="#0000E3">用 IP 过滤器可以不接受指定的IP地址以及IP范围的主动连接或者被动连接</font>.</li>
+<li>NAT-PMP and UPnP support (automatic port mapping on routers that supports it)</li>
+<li><font color="#0000E3">支持 NAT-PMP 和 UPnP (支持在具备 NAT-PMP 和 UPnP 功能的路由器上自动映射端口)</font></li>
+<li>implements automatic upload slots, to optimize download rate without spreading
+upload capacity too thin. The number of upload slots is adjusted based on the
+peers' download capacity to work even for connections that are orders of
+magnitude faster than others.</li>
+<li><font color="#0000E3">实现自动拓展上传槽, 从而优化下载速率同时又不锐减上传量. 
+	上传槽的数量可以根据 Peer 的下载量进行调节, 即便是大量连接数的情况下也是很快的</font>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="highlighted-features">
+<h1>highlighted features (高级特性)</h1>
+<div class="section" id="disk-caching">
+<h2>disk caching (磁盘缓存)</h2>
+<p>All disk I/O in libtorrent is done asynchronously to the network thread, by the
+disk io thread. When a block is read, the disk io thread reads all subsequent
+blocks from that piece into the read cache, assuming that the peer requesting
+the block will also request more blocks from the same piece. This decreases the
+number of syscalls for reading data. It also decreases delay from seeking.</p>
+<p><font color="#0000E3">通过磁盘 I/O 线程, libtorrent 的所有磁盘 I/O 都是网络线程异步处理的. 
+读取一个分块的时候, 磁盘 IO 线程还会读取该分片的所有后续的分块到读缓存, 假定 Peer 请求分块的时候将会请求同一分片内的更多的分块. 
+这样可以减少读取数据时的系统调用次数. 也可以减少寻道带来的延迟</font>.</p>
+<p>Similarly, for write requests, blocks are cached and flushed to disk once one full
+piece is complete or the piece is the least recently updated one when more cache
+space is needed. The cache dynamically allocates space between the write and read
+cache. The write cache is strictly prioritized over the read cache.</p>
+<p><font color="#0000E3">同样的, 对于写请求, 一旦有一个完整的分片下载完成或者分片是最近更新的那么分块将会缓存或者刷到磁盘, 
+	此时需要更多缓存空间.
+	会动态分配读缓存和写缓存. 写缓存绝对优先于读缓存</font>.</p>
+<p>The cache blocks that are in used, are locked into physical memory to avoid it
+being paged out to disk. Allowing the disk cache to be paged out to disk means
+that it would become extremely inefficient to flush it, since it would have to be
+read back into physical memory only to be flushed back out to disk again.</p>
+<p><font color="#0000E3">在用的缓存块, 会被锁定到物理内存来避免被交换到磁盘. 
+	允许磁盘缓存被交换到磁盘意味着刷数据到磁盘会变得极其低效, 
+	因为不得不被从新加载到内存然后再刷回磁盘</font>.</p>
+<p>In order to conserve memory, and system calls, iovec file operations are
+used to flush multiple cache blocks in a single call.</p>
+<p><font color="#0000E3">为了减少内存使用, 以及系统调用, iovec 文件操作通常会在一次调用内刷多个的缓存块</font>.</p>
+<p>On low-memory systems, the disk cache can be disabled altogether or set to smaller
+limit, to save memory.</p>
+<p><font color="#0000E3">在内存小的系统上, 磁盘缓存可以完全禁用或者设置的小一点, 从而节约内存</font>.</p>
+<p>The disk caching algorithm is configurable between 'LRU' and 'largest contiguous'.
+The largest contiguous algorithm is the default and flushes the largest contiguous
+block of buffers, instead of flushing all blocks belonging to the piece which was
+written to least recently.</p>
+<p><font color="#0000E3">磁盘缓存算法有 'LRU' 和 'largest contiguous' 这两种可选配置.
+'largest contiguous' 算法是默认的, 刷最大的连续存储块的缓冲, 而不是刷所有属于最近最少被写入的分片的块</font>.</p>
+<p>For version 0.15 a lot of work went into optimizing the cache algorithm, trying
+to increase the cache hit rate and utilization. The graph to the left shows the
+memory utilization in 0.14. This cache is a straight forward, fairly naive, implementation.
+Every block read will also read all subsequent blocks in that piece into the cache.
+Whenever we need more space, the entire oldest piece is evicted from the cache. Caching
+writes always takes presedence over the read cache. Whenever a piece is fully downloaded,
+it is flushed to disk.</p>
+<p><font color="#0000E3">在 0.15 版本中对缓存算法做了大量的优化工作, 设法去提高缓存的命中率和利用率. 
+	下方左图展示了 0.14 版本的内存利用率. 该缓存算法是很直接的, 相当简单的一个实现.
+	每次读取分块的时候同时还会读取改分片中所有后续的分块到缓存中.
+	每当需要更多的空间时, 最老的完整的分片将会从缓存区剔除. 写缓存总是优先于读缓存. 每当分片下载完整后, 都会被刷到磁盘</font>.</p>
+<img alt="disk_buffer_before_optimization.png" src="disk_buffer_before_optimization.png" style="width: 49%;" />
+<img alt="disk_buffer.png" src="disk_buffer.png" style="width: 49%;" />
+<p>The left graph shows the problem of evicting entire pieces at a time, and waiting until
+an entire piece is downloaded until flushing it. These graphs were generated for a torrent
+with fairly large pieces. This means that granularity was poor in 0.14, since it only
+dealt with entire pieces. In 0.15, the granularity problem has been fixed by evicting one
+block at a time from the read cache. This maximizes the read cache utilization. The write
+cache is also flushed when a sufficient number of contiguous blocks have been downloaded
+for a piece, which is not tied to the piece size anymore. This way the cache scales a lot
+better with piece sizes.</p>
+<p><font color="#0000E3">左图说明了问题, 一次剔除完整的分片, 然后直到一个完整的分片下载完整直到刷到缓存.
+	这些图片下载相当大的分片的 torrent 时生成的. 在版本 0.14 中, 这意味着这种缓存粒度是很糟糕的, 因为它只处理完整的分片. 
+	在版本 0.15 中, 粒度的问题已经修复, 改为从读缓存中一次剔除一个分块. 这使得读缓存利用率最大. 
+	当分片内有足够多的连续块下载完成时写缓存同样会被刷, 不再依赖 Piece 大小. 这种缓存方式相对 Piece 尺寸可以更好的伸缩</font>.</p>
+<p>The graph to the right shows the same download but with the new optimized disk cache
+algorithm. It clearly shows an increased utilization, which means higher read hit rates
+or smaller caches with maintained hit rate.</p>
+<p><font color="#0000E3">右图所展示的是优化之后的磁盘缓存算法. 可以明显的看出利用率变高了, 
+	这意味着更高的命中率或者说使用更少的缓存来保证命中率</font>.</p>
+</div>
+<div class="section" id="high-performance-disk-subsystem">
+<h2>high performance disk subsystem (高性能磁盘子系统)</h2>
+<p>In some circumstances, the disk cache may not suffice to provide maximum performance.
+One such example is high performance seeding, to a large number of peers, over a fast
+up-link. In such a case, the amount of RAM may simply not be enough to cache disk
+reads. When there's not enough RAM to cache disk reads, the disk throughput  would
+typically degrade to perform as poorly as with no cache at all, with the majority
+of the time spent waiting for the disk head to seek.</p>
+<p><font color="#0000E3">在有些情况下, 磁盘缓存不足以提供最好的性能.
+有这样一个高性能做种的例子, 有大量的 Peers, 通过一个高速的上行链路. 
+这种情况下, 内存的容量可能根本就不够用于磁盘读缓存. 
+当没有足够的内存用于磁盘读缓存时, 磁盘吞吐量通常会降低到没有缓存那样的糟糕, 
+因为主要的时间都花在等待磁头寻道上了</font>.</p>
+<p>To solve this problem, libtorrent sorts read requests by their physical offset on the
+disk. They are processed by having the disk read head sweep back and forth over the drive.</p>
+<p><font color="#0000E3">为了解决这个问题, libtorrent 根据磁盘物理偏移对读请求进行排序. 
+	它们通过在驱动器上的磁盘读取头来回扫描进行处理</font>.</p>
+<p>This makes libtorrent very suitable for large scale, high-throughput seeding.</p>
+<p><font color="#0000E3">这使得 libtorrent 非常适合大量的, 高吞吐量的做种</font>.</p>
+<img alt="disk_access_no_elevator.png" src="disk_access_no_elevator.png" style="width: 49%;" />
+<img alt="disk_access_elevator.png" src="disk_access_elevator.png" style="width: 49%;" />
+<p>These plots illustrates the physical disk offset for reads over time. The left plot
+is of a run where disk operation re-ordering is turned off and the righ is when it's
+turned on. The right one has a relatively smooth sine wave shape whereas the left
+one is more random and involves much longer seeks back and forth over the disk.</p>
+<p><font color="#0000E3">上图说明了读取物理磁盘偏移量的耗时. 
+	左图是没有经过重新排序的情况而右图有. 右图是相对平稳的类似正弦波的图像而左图就显得随机, 
+	并且左图中花费了更多的时间在磁盘上来回寻道上</font>.</p>
+<p>True physical disk offset queries are only supported on newer linux kernels, Mac OS X and
+Windows 2000 and up.</p>
+<p><font color="#0000E3">能够支持实际物理磁盘偏移量查询的是较新的 Linux 内核, Mac OS X 以及
+Windows 2000 或者更高</font>.</p>
+</div>
+<div class="section" id="network-buffers">
+<h2>network buffers (网络缓冲)</h2>
+<p>On CPUs with small L2 caches, copying memory can be expensive operations. It is important
+to keep copying to a minimum on such machines. This mostly applies to embedded systems.</p>
+<p><font color="#0000E3">在二级缓存较小的处理器上, 内存拷贝操作的成本是很高的. 
+	在这样的机器上保持最低限度的内存拷贝是很重要的. 
+	特别是嵌入式系统</font>.</p>
+<p>In order to minimize the number of times received data is copied, the receive buffer
+for payload data is received directly into a page aligned disk buffer. If the connection
+is encrypted, the buffer is decrypted in-place. The buffer is then moved into the disk
+cache without being copied. Once all the blocks for a piece have been received, or the
+cache needs to be flushed, all the blocks are passed directly to <tt class="docutils literal">writev()</tt> to flush
+them in a single syscall. This means a single copy into user space memory, and a single
+copy back into kernel memory, as illustrated by this figure:</p>
+<p><font color="#0000E3">为了尽量减少接收到的数据包被拷贝的次数, 
+	有效负载数据的接收缓冲区收到数据后会直接放到页面对齐的磁盘缓冲区. 
+	对于加密连接, 会在缓冲区内解密. 这样缓冲区不需要内存拷贝操作就可以移到磁盘缓存. 
+	一旦一个分片的所有分块接收完成, 或者需要刷缓存时, 所有的分块被直接传给 <tt class="docutils literal">writev()</tt> 通过一次系统调用进行刷的操作. 
+	这意味着只要一次用户空间的拷贝, 以及一次内核空间的拷贝, 如下图所示:</font></p>
+<img alt="write_disk_buffers.png" src="write_disk_buffers.png" style="width: 100%;" />
+<p>When seeding and uploading in general, unnecessary copying is avoided by caching blocks
+in aligned buffers, that are copied once into the peer's send buffer. The peer's send buffer
+is not guaranteed to be aligned, even though it is most of the time. The send buffer is
+then encrypted with the peer specific key and chained onto the <tt class="docutils literal">iovec</tt> for sending.
+This means there is one user space copy in order to allow unaligned peer requests and
+peer-specific encryption. This is illustrated by the following figure:</p>
+<p><font color="#0000E3">通常在做种和上传的时候, 通过将分块缓存到页面对齐的缓冲区可以避免不必要的拷贝, 
+	这样将被拷贝一次到 Peer 的发送缓冲区. 
+	尽管大部分时间内, Peer 的发送缓冲区是无法保证对齐的. 
+	通过 Peer 指定秘钥对发送缓冲区加密然后链接到 <tt class="docutils literal">iovec</tt> 进行发送.
+这意味着为了接受未对齐的 Peer 请求以及 Peer 的特定加密会产生一次用户空间的拷贝. 如下图所示流程:</font></p>
+<img alt="read_disk_buffers.png" src="read_disk_buffers.png" style="width: 100%;" />
+</div>
+<div class="section" id="piece-picker">
+<h2>piece picker (分片选择)</h2>
+<p>The piece picker is a central component in a bittorrent implementation. The piece picker
+in libtorrent is optimized for quickly finding the rarest pieces. It keeps a list of all
+available pieces sorted by rarity, and pieces with the same rarity, shuffled. The rarest
+first mode is the dominant piece picker mode. Other modes are supported as well, and
+used by peers in specific situations.</p>
+<p><font color="#0000E3">分片选择是 bittorent 实现中的一个重要组成部分. 关于分片选择, libtorrent 对快速找到最稀有分片进行了优化. 
+	它维护了一个按稀有程度排序的可用分片的列表, 然后稀有程度相同的分片会被调整. 最稀有分片优先模式是主要的分片选择模式. 
+	同时也支持其他模式, Peers 会在一些特定的情况下使用</font>.</p>
+<p>The piece picker allows to combine the availability of a piece with a priority. Together
+they determine the sort order of the piece list. Pieces with priority 0 will never be
+picked, which is used for the selective download feature.</p>
+<p><font color="#0000E3">分片选择支持结合分片可用率进行优先级排序. 两者共同确定了分片列表的排序. 
+	优先级 0 的分片将永远不会被选择, 这用于选择性的下载</font>.</p>
+<p>In order to have as few partially finished pieces as possible, peers have an affinity
+towards picking blocks from the same pieces as other peers in the same speed category.
+The speed category is a coarse categorization of peers based on their download rate. This
+makes slow peers pick blocks from the same piece, and fast peers pick from the same piece,
+and hence decreasing the likelihood of slow peers blocking the completion of pieces.</p>
+<p><font color="#0000E3">为了拥有尽可能少的部分完成的分片, 在同样的速度级别上, Peers 倾向于选择那些来自相同分片的 Peers 的分块.
+	速度级别是根据 Peers 下载速率的一个大致的区分. 
+	这使得慢速的 Peers 从拥有相同分片的慢速的 Peers 选择分块, 快速的 Peers 从拥有相同分片的快速的 Peers 选择分块,
+因此降低了慢速的 Peers 阻止完成分片下载的可能性</font>.</p>
+<p>The piece picker can also be set to download pieces in sequential order.</p>
+<p><font color="#0000E3">分片选择也可以设置成按顺序下载的模式</font>.</p>
+</div>
+<div class="section" id="share-mode">
+<h2>share mode (分享模式)</h2>
+<p>The share mode feature in libtorrent is intended for users who are only interested in
+helping out swarms, not downloading the torrents.</p>
+<p><font color="#0000E3">libtorrent 中的分享模式功能用于那些只做上传不做下载的用户</font>.</p>
+<p>It works by predicting the demand for pieces, and only download pieces if there is enough
+demand. New pieces will only be downloaded once the share ratio has hit a certain target.</p>
+<p><font color="#0000E3">通过预测分片的请求, 而且只下载那些请求足够的分片. 一旦分享率达到某一个值的时候新的分片会被下载</font>.</p>
+<p>This feature is especially useful when combined with RSS, so that a client can be set up
+to provide additional bandwidth to an entire feed.</p>
+<p><font color="#0000E3">这个功能在于 RSS 结合的时候特别有用, 这样客户端就可以为一个完整的 feed 提供额外的带宽</font>.</p>
+</div>
+<div class="section" id="merkle-hash-tree-torrents">
+<h2>merkle hash tree torrents (Merkle 哈希树 torrents)</h2>
+<img alt="merkle_tree.png" class="align-right" src="merkle_tree.png" />
+<p>Merkle hash tree torrents is an extension that lets a torrent file only contain the
+root hash of the hash tree forming the piece hashes. The main benefit of this feature
+is that regardless of how many pieces there is in a torrent, the .torrent file will
+always be the same size. It will only grow with the number of files (since it still
+has to contain the file names).</p>
+<p><font color="#0000E3">Merkle 哈希树 torrents 作为一个扩展可以让种子文件只包含哈希树的根哈希形成分片哈希值. 
+	这个功能主要的好处是不论这个 torrent 有多少分片, 它的种子文件的大小都是一样的. 
+	它的大小只会随着 torrent 中文件数数目变化 (因为依然需要包含文件名称)</font>.</p>
+<p>With regular torrents, clients have to request multiple blocks for pieces, typically
+from different peers, before the data can be verified against the piece hash. The
+larger the pieces are, the longer it will take to download a complete piece and verify
+it. Before the piece is verified, it cannot be shared with the swarm, which means the
+larger piece sizes, the slower turnaround data has when it is downloaded by peers.
+Since on average the data has to sit around, waiting, in client buffers before it has
+been verified and can be uploaded again.</p>
+<p><font color="#0000E3">对于常规的 torrents, 客户端必须请求分片的多个分块, 通常来自不同的 Peers, 
+	在数据能被与分片哈希做校验之前. 分片越大, 下载以及校验的时间就越长. 
+	分片校验之前, 无法被分享, 这就意味着分片尺寸越大, 被 Peers 下载时数据就交换的越慢.
+由于平均数据不得不适应周围, 然后等待, 直到校验完成以及可以被重新上传之前会暂存在客户端的缓冲区</font>.</p>
+<p>Another problem with large piece sizes is that it is harder for a client to pinpoint
+the malicious or buggy peer when a piece fails, and it will take longer to re-download
+it and take more tries before the piece succeeds the larger the pieces are.</p>
+<p><font color="#0000E3">大尺寸分片的另外一个问题是当一个分片下载失败时客户端很难判断恶意的或者有问题的 Peer, 
+	然后将会花更长的时间去重新下载这个分片然后重试多次直到分片下载成功</font>.</p>
+<p>The piece size in regular torrents is a tradeoff between the size of the .torrent file
+itself and the piece size. Often, for files that are 4 GB, the piece size is 2 or 4 MB,
+just to avoid making the .torrent file too big.</p>
+<p><font color="#0000E3">关于 torrents 的分片尺寸会在种子文件和分片大小之间做一个权衡. 
+	一般的, 对于 4GB 大小的文件, 分片尺寸可以是 2MB 或者 4 MB, 避免种子文件太大</font>.</p>
+<p>Merkle torrents solves these problems by removing the tradeoff between .torrent size and
+piece size. With merkle torrents, the piece size can be the minimum block size (16 kB),
+which lets peers verify every block of data received from peers, immediately. This
+gives a minimum turnaround time and completely removes the problem of identifying malicious
+peers.</p>
+<p><font color="#0000E3">Merkle torrents 通过去除种子文件大小和分片大小之间的权衡解决了这些问题. 
+	通过 Merkle torrents, 分片大小可以是最小到跟分块一样大小的 (16 kB),
+这样使得 Peers 一收到 Peers 的每一个分块就立即校验. 这使得交换数据的时间最短而且解决了标记恶意 Peers 的问题</font>.</p>
+<p>The root hash is built by hashing all the piece hashes pair-wise, until they all collapse
+down to the root.</p>
+<p><font color="#0000E3">根哈希成对的对分片生成哈希值, 直到生成一颗倒挂的树</font>.</p>
+</div>
+<div class="section" id="customizable-file-storage">
+<h2>customizable file storage (可定制的文件存储)</h2>
+<img alt="storage.png" class="align-right" src="storage.png" />
+<p>libtorrent's storage implementation is customizable. That means a special purpose bittorrent
+client can replace the default way to store files on disk.</p>
+<p><font color="#0000E3">libtorrent 的存储实现是可定制的. 这意味着特殊用途的bittorent 客户端可替代原有的默认将文件存储在磁盘的方式</font>.</p>
+<p>When implementing a bittorrent cache, it doesn't matter how the data is stored on disk, as
+long as it can be retrieved and seeded. In that case a new storage class can be implemented
+(inheriting from the <tt class="docutils literal">storage_interface</tt> class) that avoids the unnecessary step of mapping
+slots to files and offsets. The storage can ignore the file boundaries and just store the
+entire torrent in a single file (which will end up being all the files concatenated). The main
+advantage of this, other than a slight cpu performance gain, is that all file operations would
+be page (and sector) aligned. This enables efficient unbuffered I/O, and can potentially
+lead to more efficient read caching (using the built in disk cache rather than relying on the
+operating system's disk cache).</p>
+<p><font color="#0000E3">实现一个 bittorrent 缓存时, 无论如何数据都会被存储在磁盘上, 只要能够被检索和做种. 
+	这样一个新的存储类可以被实现 (从 <tt class="docutils literal">storage_interface</tt> 类) 继承然后避免没必要的映射槽到文件以及偏移量的步骤. 
+	存储可以忽略文件边界然后只是存储完整的 torrent 到单个文件 (最终将是所有的文件连接在一起). 
+	它的主要优势在于, 除了一点点处理器性能的获益, 还有所有文件操作都将是页面 (以及段) 对齐的. 
+	这使无缓冲 I/O 变得高效, 而且可能使读缓存更加高效 (使用内建的磁盘缓存而非基于操作系统的磁盘缓存)</font>.</p>
+<p>The storage interface supports operating systems where you can ask for sparse regions
+(such as Windows and Solaris). The advantage of this is that when checking files, the regions
+that are known to be sparse can be skipped, which can reduce the time to check a torrent
+significantly.</p>
+<p><font color="#0000E3">存储接口支持有些操作系统创建稀疏文件 (例如 Windows 和 Solaris). 
+	该优势体现在校验文件的时候, 稀疏区域可以被跳过, 这样可以大大减少校验一个 torrent 的时间</font>.</p>
+</div>
+<div class="section" id="easy-to-use-api">
+<h2>easy to use API (易于使用的 API)</h2>
+<p>One of the design goals of the libtorrent API is to make common operations simple, but still
+have it possible to do complicated and advanced operations. This is best illustrated by example
+code to implement a simple bittorrent client:</p>
+<p><font color="#0000E3">libtorrent API 的其中一个设计目标是使得大部分的操作都简单, 但是可能还是会存在一些复杂高级的操作. 
+	一个简单的 bittorrent 客户端的例程就是最好的说明:</font></p>
+<pre class="literal-block">
+#include &lt;iostream&gt;
+#include &quot;libtorrent/session.hpp&quot;
+
+// usage a.out [torrent-file]
+int main(int argc, char* argv[]) try
+{
+        using namespace libtorrent;
+
+        session s;
+        s.listen_on(std::make_pair(6881, 6889));
+        add_torrent_params p;
+        p.save_path = &quot;./&quot;;
+        p.ti = new torrent_info(argv[1]);
+        s.add_torrent(p);
+
+        // wait for the user to end
+        char a;
+        std::cin.unsetf(std::ios_base::skipws);
+        std::cin &gt;&gt; a;
+        return 0;
+}
+catch (std::exception&amp; e)
+{
+        std::cerr &lt;&lt; ec.what() &lt;&lt; std::endl;
+        return 1;
+}
+</pre>
+<p>This client doesn't give the user any status information or progress about the torrent, but
+it is fully functional.</p>
+<p><font color="#0000E3">这个客户端没有给用户展示任何关于 torrent 的状态信息或者进度, 但它的功能是完整的</font>.</p>
+<p>libtorrent also comes with python bindings for easy access for python developers.</p>
+<p><font color="#0000E3">libtorrent 同样有提供 Python Bindings 给 Python 开发者</font>.</p>
+</div>
+</div>
+<div class="section" id="portability">
+<h1>portability (可移植性)</h1>
+<p>libtorrent runs on most major operating systems, including Windows,
+MacOS X, Linux, BSD and Solaris.
+It uses Boost.Thread, Boost.Filesystem, Boost.Date_time and various other
+boost libraries. At least version 1.46.1 of boost is required.</p>
+<p><font color="#0000E3">libtorrent 可以在大部分主流的操作系统上运行, 包括 Windows,
+MacOS X, Linux, BSD 以及 Solaris.
+它使用 Boost.Thread, Boost.Filesystem, Boost.Date_time 以及大量的其它的 boost 库. Boost 最低版本要求是 1.46.1</font>.</p>
+<p>libtorrent uses asio, hence it will take full advantage of high performance
+network APIs on the most popular platforms. I/O completion ports on windows,
+epoll on linux and kqueue on MacOS X and BSD.</p>
+<p><font color="#0000E3">libtorrent 使用 asio, 因此在大部分主流的平台上将充分利用其高性能网络 APIs 的优势,
+在 linux 上使用 epoll 然后在 MacOS X 和 BSD 上使用 kqueue</font>.</p>
+<p>libtorrent does not build with the following compilers:</p>
+<p><font color="#0000E3">libtorrent 不支持以下编译器:</font></p>
+<ul class="simple">
+<li>GCC 2.95.4</li>
+<li>Visual Studio 6, 7.0, 7.1</li>
+</ul>
+</div>
+
+    </div>
+    </div>
+    <div id="gradient"></div>
+    <div id="footer">
+    <table>
+    <tr>
+      <td><a href="index.html">home</a></td>
+      <td><a href="http://blog.libtorrent.org">blog</a></td>
+      <td><a href="utp.html">uTP</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://sourceforge.net/projects/libtorrent/files/libtorrent/">download</a></td>
+      <td><a href="reference.html">documentation</a></td>
+      <td><a href="dht_store.html">DHT put extension</a></td>
+    </tr>
+    <tr>
+      <td><a href="https://sourceforge.net/projects/libtorrent/files/py-libtorrent/">python bindings</a></td>
+      <td><a href="features.html">features</a></td>
+      <td><a href="dht_sec.html">DHT security extension</a></td>
+    </tr>
+    <tr>
+      <td><a href="http://dir.gmane.org/gmane.network.bit-torrent.libtorrent">mailing list archive</a></td>
+      <td><a href="contributing.html">contributing</a></td>
+      <td><a href="streaming.html">streaming</a></td>
+    </tr>
+    <tr>
+      <td><a href="http://code.google.com/p/libtorrent/issues/entry">report a bug</a></td>
+      <td><a href="building.html">building</a></td>
+      <td><a href="bittorrent.pdf">bittorrent slides</a></td>
+    </tr>
+    </table>
+    </div>
+    <div id="filler"></div>
+
+</div>
+</body>
+</html>
