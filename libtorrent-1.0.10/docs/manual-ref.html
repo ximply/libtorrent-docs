@@ -170,7 +170,7 @@ torrent 是自动管理的, 将会定期地脱离上传模式, 尝试再次写�
 <h1>network primitives(网络原语)</h1>
 <p>There are a few typedefs in the <tt class="docutils literal">libtorrent</tt> namespace which pulls
 in network types from the <tt class="docutils literal">asio</tt> namespace. These are:</p>
-<p><font color="#0000E3">在 <tt class="docutils literal">libtorrent</tt> 命名空间下有几个网络类型定义来自 <tt class="docutils literal">asio</tt> 名称空间. 它们是:</font></p>
+<p><font color="#0000E3">在 <tt class="docutils literal">libtorrent</tt> 命名空间下有几个网络类型定义来自 <tt class="docutils literal">asio</tt> 命名空间. 它们是:</font></p>
 <pre class="literal-block">
 typedef asio::ip::address address;
 typedef asio::ip::address_v4 address_v4;
@@ -193,26 +193,37 @@ with an associated port.</p>
 <p><font color="#0000E3">关于这些类型的文档, 请参考 <a class="reference external" href="http://asio.sourceforge.net/asio-0.3.8/doc/asio/reference.html">asio documentation</a>.</font></p>
 </div>
 <div class="section" id="exceptions">
-<h1>exceptions</h1>
+<h1>exceptions(异常处理)</h1>
 <p>Many functions in libtorrent have two versions, one that throws exceptions on
 errors and one that takes an <tt class="docutils literal">error_code</tt> reference which is filled with the
 error code on errors.</p>
+<p><font color="#0000E3">在 libtorrent 许多函数有两种版本, 一种是遇到错误时会抛出异常
+ 然后另外一种是使用 <tt class="docutils literal">error_code</tt> 的引用来携带一个错误编码.</font></p>
 <p>There is one exception class that is used for errors in libtorrent, it is based
 on boost.system's <tt class="docutils literal">error_code</tt> class to carry the error code.</p>
+<p><font color="#0000E3">在 libtorrent 中有一个异常类来处理错误, 它基于 boost.system 的 <tt class="docutils literal">error_code</tt> 类并且带有错误编码.</font></p>
 <p>For more information, see <a class="reference external" href="reference-Error_Codes.html#libtorrent_exception">libtorrent_exception</a> and <a class="reference external" href="reference-Error_Codes.html#error_code_enum">error_code_enum</a>.</p>
 <div class="section" id="translating-error-codes">
-<h2>translating error codes</h2>
+<p><font color="#0000E3">更多信息, 查看 <a class="reference external" href="reference-Error_Codes.html#libtorrent_exception">libtorrent_exception</a> 和 <a class="reference external" href="reference-Error_Codes.html#error_code_enum">error_code_enum</a>.</font></p>
+<div class="section" id="translating-error-codes">
+<h2>translating error codes(翻译错误编码)</h2>
 <p>The error_code::message() function will typically return a localized error string,
 for system errors. That is, errors that belong to the generic or system category.</p>
+<p><font color="#0000E3">这个 error_code::message() 函数通常会返回一个本地化错误字串,
+对于系统错误来说. 也就是说, 这些是属于通用的或者系统类别的错误.</font></p>
 <p>Errors that belong to the libtorrent error category are not localized however, they
 are only available in english. In order to translate libtorrent errors, compare the
 error category of the <tt class="docutils literal">error_code</tt> object against <tt class="docutils literal"><span class="pre">libtorrent::get_libtorrent_category()</span></tt>,
 and if matches, you know the error code refers to the list above. You can provide
 your own mapping from error code to string, which is localized. In this case, you
 cannot rely on <tt class="docutils literal"><span class="pre">error_code::message()</span></tt> to generate your strings.</p>
+<p><font color="#0000E3">然而 libtorrent 类别的错误没有本地化, 只有英语. 为了翻译 libtorrent 错误, 把 <tt class="docutils literal">error_code</tt> 的错误类别和 <tt class="docutils literal"><span class="pre">libtorrent::get_libtorrent_category()</span></tt> 进行比较,
+如果匹配, 你可以获取到这个错误编码对应的上述列表中的信息. 你可以提供自己的错误信息映射表, 而这个表是本地化的. 这样, 你不用依赖 <tt class="docutils literal"><span class="pre">error_code::message()</span></tt> 来生成错误信息.</font></p>
 <p>The numeric values of the errors are part of the API and will stay the same, although
 new error codes may be appended at the end.</p>
+<p><font color="#0000E3">错误编码对应的数值表示是 API 的一部分而且是不变的, 而新增的错误编码会被添加到末尾.</font></p>
 <p>Here's a simple example of how to translate error codes:</p>
+<p><font color="#0000E3">下面是一个如何进行错误编码翻译的例子:</font></p>
 <pre class="code c++ literal-block">
 <span class="name">std</span><span class="operator">::</span><span class="name">string</span> <span class="name">error_code_to_string</span><span class="punctuation">(</span><span class="name">boost</span><span class="operator">::</span><span class="name">system</span><span class="operator">::</span><span class="name">error_code</span> <span class="keyword">const</span><span class="operator">&amp;</span> <span class="name">ec</span><span class="punctuation">)</span>
 <span class="punctuation">{</span>
@@ -248,28 +259,39 @@ new error codes may be appended at the end.</p>
 </div>
 </div>
 <div class="section" id="magnet-links">
-<h1>magnet links</h1>
+<h1>magnet links(磁力链接)</h1>
 <p>Magnet links are URIs that includes an info-hash, a display name and optionally
 a tracker url. The idea behind magnet links is that an end user can click on a
 link in a browser and have it handled by a bittorrent application, to start a
 download, without any .torrent file.</p>
+<p><font color="#0000E3">磁力链接是一种包含 info-hash 的 URI, 有一个显示名称以及一个可选的 tracker URL.磁力链接的初衷是当用户在浏览器上点击一个链接时
+可以通过 bittorrent 应用来处理, 然后开始下载, 但是不需要 .torrent 文件.</font></p>
 <p>The format of the magnet URI is:</p>
+<p><font color="#0000E3">磁力链接的 URI 格式如下:</font></p>
 <p><strong>magnet:?xt=urn:btih:</strong> <em>Base16 encoded info-hash</em> [ <strong>&amp;dn=</strong> <em>name of download</em> ] [ <strong>&amp;tr=</strong> <em>tracker URL</em> ]*</p>
 </div>
 <div class="section" id="queuing">
-<h1>queuing</h1>
+<h1>queuing(排队)</h1>
 <p>libtorrent supports <em>queuing</em>. Which means it makes sure that a limited number of
 torrents are being downloaded at any given time, and once a torrent is completely
 downloaded, the next in line is started.</p>
+<p><font color="#0000E3">libtorrent 支持<em>排队</em>. 这意味着可以在任何时候保证正在下载的 torrents 数目得到限制, 一个 torrent 下载完成后, 下一个会加入进来下载.</font></p>
 <p>Torrents that are <em>auto managed</em> are subject to the queuing and the active
 torrents limits. To make a torrent auto managed, set <tt class="docutils literal">auto_managed</tt> to true
 when adding the torrent (see <a class="reference external" href="reference-Session.html#async_add_torrent()">async_add_torrent()</a> and <a class="reference external" href="reference-Session.html#add_torrent()">add_torrent()</a>).</p>
+<p><font color="#0000E3"><em>自动管理 </em>的 torrents 受到排队以及活动的 torrents 限制的制约. 要使 torrent 自动管理的话, 在添加 torrent 时设置 <tt class="docutils literal">auto_managed</tt> 为 true
+ (查看 <a class="reference external" href="reference-Session.html#async_add_torrent()">async_add_torrent()</a> 和 <a class="reference external" href="reference-Session.html#add_torrent()">add_torrent()</a>).</font></p>
 <p>The limits of the number of downloading and seeding torrents are controlled via
 <tt class="docutils literal">active_downloads</tt>, <tt class="docutils literal">active_seeds</tt> and <tt class="docutils literal">active_limit</tt> in
 <a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>. These limits takes non auto managed torrents into account as
 well. If there are more non-auto managed torrents being downloaded than the
 <tt class="docutils literal">active_downloads</tt> setting, any auto managed torrents will be queued until
 torrents are removed so that the number drops below the limit.</p>
+<p><font color="#0000E3">限制正在下载的以及正在做种的 torrents 可以通过
+<tt class="docutils literal">active_downloads</tt>, <tt class="docutils literal">active_seeds</tt> 和 <tt class="docutils literal">active_limit</tt> 进行控制, 这些配置参数在
+<a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>. 这些限制也会将非自动管理的 torrents 计算在内. If there are more non-auto managed torrents being downloaded than the
+<tt class="docutils literal">active_downloads</tt> setting, any auto managed torrents will be queued until
+torrents are removed so that the number drops below the limit.</font></p>
 <p>The default values are 8 active downloads and 5 active seeds.</p>
 <p>In addition to the downloading and seeding limits, there are limits on <em>actions</em>
 torrents perform. The downloading and seeding limits control whether peers are
