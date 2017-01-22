@@ -289,33 +289,43 @@ well. If there are more non-auto managed torrents being downloaded than the
 torrents are removed so that the number drops below the limit.</p>
 <p><font color="#0000E3">限制正在下载的以及正在做种的 torrents 可以通过
 <tt class="docutils literal">active_downloads</tt>, <tt class="docutils literal">active_seeds</tt> 和 <tt class="docutils literal">active_limit</tt> 进行控制, 这些配置参数在
-<a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>. 这些限制也会将非自动管理的 torrents 计算在内. If there are more non-auto managed torrents being downloaded than the
-<tt class="docutils literal">active_downloads</tt> setting, any auto managed torrents will be queued until
-torrents are removed so that the number drops below the limit.</font></p>
+<a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>. 这些限制也会将非自动管理的 torrents 计算在内. 如果有比
+<tt class="docutils literal">active_downloads</tt> 设置的更多的非自动管理的 torrents 变成下载的, 任何自动管理的 torrents 将会被排队直到
+torrents 被删除然后这个数量降至限制值以下.</font></p>
 <p>The default values are 8 active downloads and 5 active seeds.</p>
+<p><font color="#0000E3">默认是8个活动下载数以及5个活动做种数.</font></p>
 <p>In addition to the downloading and seeding limits, there are limits on <em>actions</em>
 torrents perform. The downloading and seeding limits control whether peers are
 allowed at all, and if peers are not allowed, torrents are stopped and don't do
 anything. If peers are allowed, torrents may:</p>
+<p><font color="#0000E3">除了下载和做种的限制, 也有对 torrents <em>actions</em>
+上的限制. 下载和做种的限制控制是否 peers 都被允许, 如果不被允许, 将停止 torrents 然后不做任何事情. 如果被允许, torrents 将:</font></p>
 <ol class="arabic simple">
-<li>announce to trackers</li>
-<li>announce to the DHT</li>
-<li>announce to local peer discovery (local service discovery)</li>
+<li>announce to trackers (向 trackers announce)</li>
+<li>announce to the DHT (向 DHT announce)</li>
+<li>announce to local peer discovery (local service discovery) (向本地 peer 发现 announce (本地服务发现))</li>
 </ol>
 <p>Each of those actions are associated with a cost and hence may need a seprarate
 limit. These limits are controlled by <tt class="docutils literal">active_tracker_limit</tt>,
 <tt class="docutils literal">active_dht_limit</tt> and <tt class="docutils literal">active_lsd_limit</tt> respectively.</p>
+<p><font color="#0000E3">以上每一种操作都有开销, 因此可能需要独立的限制. 这些限制分别由 <tt class="docutils literal">active_tracker_limit</tt>,
+<tt class="docutils literal">active_dht_limit</tt> 和 <tt class="docutils literal">active_lsd_limit</tt> 控制.</font></p>
 <p>A client that is not concerned about the separate costs of these actions should
 set all 3 of these limits to the same value as <tt class="docutils literal">active_limit</tt> (i.e.
 the max limit of any active torrent).</p>
+<p><font color="#0000E3">客户端不关心每一种操作的单独消耗, 设置这三个值为一样的就行, 这个配置是 <tt class="docutils literal">active_limit</tt> (i.e.
+活动的 torrent 总限制数).</font></p>
 <p>At a regular interval, torrents are checked if there needs to be any
 re-ordering of which torrents are active and which are queued. This interval
 can be controlled via <tt class="docutils literal">auto_manage_interval</tt> in <a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>. It defaults
 to every 30 seconds.</p>
+<p><font color="#0000E3">固定的时间间隔内, torrents 会被检查是否需要重新排序, 然后哪一些活动的 torrents 会被排队. 
+	这个时间间隔可以通过 <tt class="docutils literal">auto_manage_interval</tt> 这个参数进行控制, 在 <a class="reference external" href="reference-Settings.html#session_settings">session_settings</a> 中. 默认是30秒.</font></p>
 <p>For queuing to work, resume data needs to be saved and restored for all
 torrents. See <a class="reference external" href="reference-Core.html#save_resume_data()">save_resume_data()</a>.</p>
+<p><font color="#0000E3">为了能让排队起作用, 所有 torrents 需要保存恢复数据以及可以加载这些恢复数据. 查看 <a class="reference external" href="reference-Core.html#save_resume_data()">save_resume_data()</a>.</font></p>
 <div class="section" id="downloading">
-<h2>downloading</h2>
+<h2>downloading(下载)</h2>
 <p>Torrents that are currently being downloaded or incomplete (with bytes still to
 download) are queued. The torrents in the front of the queue are started to be
 actively downloaded and the rest are ordered with regards to their queue
@@ -323,26 +333,39 @@ position. Any newly added torrent is placed at the end of the queue. Once a
 torrent is removed or turns into a seed, its queue position is -1 and all
 torrents that used to be after it in the queue, decreases their position in
 order to fill the gap.</p>
+<p><font color="#0000E3">下载中的或者说不完整的(还有一些数据需要下载) torrents 在排队. 处于队列前面的 torrents 进入活动下载状态然后剩下的按照它们的队列位置进行排序. 
+	任何新增的 torrent 会放在队列的末尾. 一旦有一个
+torrent 被删除或者变成种子, 它的队列位置会变成 -1 然后之前所有的排在这个 torrent 之后的 torrents, 位置会减小1来填补这个空缺.</font></p>
 <p>The queue positions are always in a sequence without any gaps.</p>
+<p><font color="#0000E3">队列位置是连续的, 中间没有空缺的.</font></p>
 <p>Lower queue position means closer to the front of the queue, and will be
 started sooner than torrents with higher queue positions.</p>
+<p><font color="#0000E3">队列位置比较小的意味着在队列中更靠前, 会比队列位置大的更快开始.</font></p>
 <p>To query a torrent for its position in the queue, or change its position, see:
 <a class="reference external" href="reference-Core.html#queue_position()">queue_position()</a>, <a class="reference external" href="reference-Core.html#queue_position_up()">queue_position_up()</a>, <a class="reference external" href="reference-Core.html#queue_position_down()">queue_position_down()</a>,
 <a class="reference external" href="reference-Core.html#queue_position_top()">queue_position_top()</a> and <a class="reference external" href="reference-Core.html#queue_position_bottom()">queue_position_bottom()</a>.</p>
+<p><font color="#0000E3">查询 torrent 在队列中的位置, 或者改变它的位置, 查看:
+<a class="reference external" href="reference-Core.html#queue_position()">queue_position()</a>, <a class="reference external" href="reference-Core.html#queue_position_up()">queue_position_up()</a>, <a class="reference external" href="reference-Core.html#queue_position_down()">queue_position_down()</a>,
+<a class="reference external" href="reference-Core.html#queue_position_top()">queue_position_top()</a> 和 <a class="reference external" href="reference-Core.html#queue_position_bottom()">queue_position_bottom()</a>.</font></p>
 </div>
 <div class="section" id="seeding">
-<h2>seeding</h2>
+<h2>seeding(做种)</h2>
 <p>Auto managed seeding torrents are rotated, so that all of them are allocated a
 fair amount of seeding. Torrents with fewer completed <em>seed cycles</em> are
 prioritized for seeding. A seed cycle is completed when a torrent meets either
 the share ratio limit (uploaded bytes / downloaded bytes), the share time ratio
 (time seeding / time downloaing) or seed time limit (time seeded).</p>
+<p><font color="#0000E3">自动管理做种中的 torrents 是轮流的, 这样所有做种中的 torrents 可以得到公平地做种. 
+	有更少的完整的 <em>seed cycles</em> 的 torrents 会优先做种. 一个 seed cycle 是一个完整的周期, torrent 达到分享率限制 (已上传字节数 / 已下载字节数), 或者分享时间率限制
+(做种时间 / 下载时间) 或者做种时间限制 (已做种多长时间).</font></p>
 <p>The relevant settings to control these limits are <tt class="docutils literal">share_ratio_limit</tt>,
 <tt class="docutils literal">seed_time_ratio_limit</tt> and <tt class="docutils literal">seed_time_limit</tt> in <a class="reference external" href="reference-Settings.html#session_settings">session_settings</a>.</p>
+<p><font color="#0000E3">有一些相关的设置来控制这些限制, 是 <tt class="docutils literal">share_ratio_limit</tt>,
+<tt class="docutils literal">seed_time_ratio_limit</tt> 和 <tt class="docutils literal">seed_time_limit</tt>, 在 <a class="reference external" href="reference-Settings.html#session_settings">session_settings</a> 中.</font></p>
 </div>
 </div>
 <div class="section" id="fast-resume">
-<h1>fast resume</h1>
+<h1>fast resume(快速恢复)</h1>
 <p>The fast resume mechanism is a way to remember which pieces are downloaded
 and where they are put between sessions. You can generate fast resume data by
 calling <a class="reference external" href="reference-Core.html#save_resume_data()">save_resume_data()</a> on <a class="reference external" href="reference-Core.html#torrent_handle">torrent_handle</a>. You can
@@ -357,7 +380,7 @@ the checking anyway, if the fast-resume data is corrupt or doesn't fit the
 storage for that torrent, then it will not trust the fast-resume data and just
 do the checking.</p>
 <div class="section" id="file-format">
-<h2>file format</h2>
+<h2>file format(文件格式)</h2>
 <p>The file format is a bencoded dictionary containing the following fields:</p>
 <table border="1" class="docutils">
 <colgroup>
