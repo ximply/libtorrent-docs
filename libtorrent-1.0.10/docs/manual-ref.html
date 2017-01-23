@@ -374,14 +374,21 @@ will not check the piece hashes then, and rely on the information given in the
 fast-resume data. The fast-resume data also contains information about which
 blocks, in the unfinished pieces, were downloaded, so it will not have to
 start from scratch on the partially downloaded pieces.</p>
+<p><font color="#0000E3">快速恢复机制, 它是这样一种方式, 记住每次会话下载了哪些分片以及存放在哪里. 你可以通过调用
+ <a class="reference external" href="reference-Core.html#save_resume_data()">save_resume_data()</a> 来生成快速恢复数据, 在 <a class="reference external" href="reference-Core.html#torrent_handle">torrent_handle</a> 中. 你可以
+将这些数据保存到磁盘然后恢复 torrent 的时候使用. libtorrent
+将不再检查这些分片的哈希值, 信任快速恢复数据提供的信息. 快速恢复数据也包含分块信息, 未完成的分片中, 哪一些分块下载完成了, 这样就不必从部分下载完成的分片开始.</font></p>
 <p>To use the fast-resume data you simply give it to <a class="reference external" href="reference-Session.html#async_add_torrent()">async_add_torrent()</a> and
 <a class="reference external" href="reference-Session.html#add_torrent()">add_torrent()</a>, and it will skip the time consuming checks. It may have to do
 the checking anyway, if the fast-resume data is corrupt or doesn't fit the
 storage for that torrent, then it will not trust the fast-resume data and just
 do the checking.</p>
+<p><font color="#0000E3">使用快速恢复数据的时候你只要简单地将这些数据传给 <a class="reference external" href="reference-Session.html#async_add_torrent()">async_add_torrent()</a> 和
+<a class="reference external" href="reference-Session.html#add_torrent()">add_torrent()</a>, 然后它将跳过耗时的检查. 但也有可能还是需要检查, 如果说快速恢复数据损坏了或者与 torrent 存储不匹配, 这时将不会相信快速恢复数据然后会进行检查.</font></p>
 <div class="section" id="file-format">
 <h2>file format(文件格式)</h2>
 <p>The file format is a bencoded dictionary containing the following fields:</p>
+<p><font color="#0000E3">它的文件格式是包含以下字段的一个B编码的字典:</font></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="30%" />
@@ -391,11 +398,20 @@ do the checking.</p>
 <tr><td><tt class="docutils literal"><span class="pre">file-format</span></tt></td>
 <td>string: &quot;libtorrent resume file&quot;</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串值: &quot;libtorrent resume file&quot;</font></td>
+</tr>
 <tr><td><tt class="docutils literal"><span class="pre">file-version</span></tt></td>
 <td>integer: 1</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值: 1</font></td>
+</tr>
 <tr><td><tt class="docutils literal"><span class="pre">info-hash</span></tt></td>
 <td>string, the info hash of the torrent this data is saved for.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串值, torrent 对应的 info-hash.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">blocks per piece</tt></td>
 <td>integer, the number of blocks per piece. Must be: piece_size
@@ -404,11 +420,22 @@ is the number of blocks per (normal sized) piece. Usually
 each block is 16 * 1024 bytes in size. But if piece size is
 greater than 4 megabytes, the block size will increase.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值, 每个分片的分块数目. 是: piece_size
+/ (16 * 1024). 在 [1, 256] 这个闭合区间内. 它是每个分片 (常规大小) 的分块数目. 通常
+每个分块大小是 16 * 1024 字节. 但是如果分片大小大于4MB, 分块将会变大.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">pieces</tt></td>
 <td>A string with piece flags, one character per piece.
 Bit 1 means we have that piece.
 Bit 2 means we have verified that this piece is correct.
 This only applies when the torrent is in seed_mode.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串值, 包含分片标志位, 每个分片一个字符.
+Bit 1 表示有这个分片.
+Bit 2 表示这个分片已经通过校验.
+seed_mode 模式的 torrent 这两个标志位会被置位.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">slots</tt></td>
 <td><p class="first">list of integers. The list maps slots to piece indices. It
@@ -420,93 +447,167 @@ to meet the following requirement:</p>
 the piece must be located in that slot.</p>
 </td>
 </tr>
+<tr><td></td>
+<td><p class="first"><font color="#0000E3">整型值列表. 列表的槽位映射到分片索引. 每个分片对应到相应槽位. 
+	如果分片索引是 -2 那么意味着空闲, 说明没有分片. 如果是 -1, 说明这个槽位还没在磁盘上申请空间. 分片必须达到以下要求:</p>
+<p class="last">如果在分片索引位置上有槽位, 那么这个分片必须放在这个槽位上.</font></p>
+</td>
+</tr>
 <tr><td><tt class="docutils literal">total_uploaded</tt></td>
 <td>integer. The number of bytes that have been uploaded in
 total for this torrent.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 已经上传的总字节数.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">total_downloaded</tt></td>
 <td>integer. The number of bytes that have been downloaded in
 total for this torrent.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 已经下载的总字节数.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">active_time</tt></td>
 <td>integer. The number of seconds this torrent has been active.
 i.e. not paused.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 总活动秒数.
+i.e. 非暂停状态.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">seeding_time</tt></td>
 <td>integer. The number of seconds this torrent has been active
 and seeding.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 总活动做种秒数.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">num_seeds</tt></td>
 <td>integer. An estimate of the number of seeds on this torrent
 when the resume data was saved. This is scrape data or based
 on the peer list if scrape data is unavailable.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 当快速恢复数据保存时对种子数目的估算. 这个数据来自于 scrape, 或者基于
+peer 列表(如果 scrape 获取不到的话).</font></td>
+</tr>
 <tr><td><tt class="docutils literal">num_downloaders</tt></td>
 <td>integer. An estimate of the number of downloaders on this
 torrent when the resume data was last saved. This is used as
 an initial estimate until we acquire up-to-date scrape info.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 当快速恢复数据最近一次保存时对下载者数目的估算. 这个作为初始化的估算值直到我们获取到最新的 scrape 信息.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">upload_rate_limit</tt></td>
 <td>integer. In case this torrent has a per-torrent upload rate
 limit, this is that limit. In bytes per second.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 用在 torrent 有单独的上传速率限制. 单位是 B/s.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">download_rate_limit</tt></td>
 <td>integer. The download rate limit for this torrent in case
 one is set, in bytes per second.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 用在 torrent 有单独的下载速率限制, 单位是 B/s.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">max_connections</tt></td>
 <td>integer. The max number of peer connections this torrent
 may have, if a limit is set.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 的 peer 连接数限制, 如果有设置限制的话.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">max_uploads</tt></td>
 <td>integer. The max number of unchoked peers this torrent may
 have, if a limit is set.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 这个 torrent 的 unchoked peers 数目限制, 如果有设置限制的话.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">seed_mode</tt></td>
 <td>integer. 1 if the torrent is in seed mode, 0 otherwise.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 1 表示 torrent 处于做种状态, 否则为 0.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">priority</tt></td>
 <td>integer. The priority of a torrent determines how much
 bandwidth its peers are assigned when distributing upload
 and download rate quotas.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. Torrent 的优先级决定了分发时给 peers 分配多少上传速率带宽配额和下载速率带宽配额.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">file_priority</tt></td>
 <td>list of integers. One entry per file in the torrent. Each
 entry is the priority of the file with the same index.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值列表. 在 torrent 中每个文件对应一个记录. 每个记录对应有相同索引的文件的优先级.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">piece_priority</tt></td>
 <td>string of bytes. Each byte is interpreted as an integer and
 is the priority of that piece.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字节型字符串. 每个字节看作是一个整型值然后它表示对应分片的优先级.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">auto_managed</tt></td>
 <td>integer. 1 if the torrent is auto managed, otherwise 0.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 自动管理为 1, 否则为 0.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">sequential_download</tt></td>
 <td>integer. 1 if the torrent is in sequential download mode,
 0 otherwise.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 顺序下载模式为 1, 否则为 0.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">paused</tt></td>
 <td>integer. 1 if the torrent is paused, 0 otherwise.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">整型值. 暂停为 1, 否则为 0.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">trackers</tt></td>
 <td>list of lists of strings. The top level list lists all
 tracker tiers. Each second level list is one tier of
 trackers.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串列表的列表. 一级列表列出所有的 tracker tiers. 每个二级列表是 trackers 的其中一个 tier.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">mapped_files</tt></td>
 <td>list of strings. If any file in the torrent has been
 renamed, this entry contains a list of all the filenames.
 In the same order as in the torrent file.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串列表. 这个 torrent 的任何被重命名的文件, 这个列表包含所有的文件名.
+与 torrent 文件中的顺序一样.</font></td>
 </tr>
 <tr><td><tt class="docutils literal"><span class="pre">url-list</span></tt></td>
 <td>list of strings. List of url-seed URLs used by this torrent.
 The urls are expected to be properly encoded and not contain
 any illegal url characters.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串列表. 这个 torrent 所有的 url-seed URL.
+这些 URL 需要正确编码并且不包含任何非法的 URL 字符.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">httpseeds</tt></td>
 <td>list of strings. List of httpseed URLs used by this torrent.
 The urls are expected to be properly encoded and not contain
 any illegal url characters.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串列表. 这个 torrent 所有的 httpseed URL.
+这些 URL 需要正确编码并且不包含任何非法的 URL 字符.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">merkle tree</tt></td>
 <td>string. In case this torrent is a merkle torrent, this is a
@@ -515,10 +616,17 @@ including the root and all leaves. The tree is not
 necessarily complete, but complete enough to be able to send
 any piece that we have, indicated by the have bitmask.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 用在 merkle torrent, 这是一个包含完整 merkle tree 的字符串, 所有节点,
+包括根节点以及所有叶子节点. 它不需要完整, 但是可以发送所拥有的分片, 通过 HAVE 位图.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">save_path</tt></td>
 <td>string. The save path where this torrent was saved. This is
 especially useful when moving torrents with move_storage()
 since this will be updated.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 表示 torrent 存储数据的路径. 当使用 move_storage() 移动 torrents 时特别有用, 因为这个值会被更新.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">peers</tt></td>
 <td>string. This string contains IPv4 and port pairs of peers we
@@ -527,9 +635,16 @@ representation. 4 bytes IPv4 address followed by 2 bytes
 port. Hence, the length of this string should be divisible
 by 6.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 这个字符串包含在最新的会话中连接上的 peers 的信息(IPv4地址以及对应端口). 这些 endpoints 使用紧凑型表示. 4字节的 IPv4 地址紧接着是2字节
+的端口信息. 因此, 字符串的长度可以被6整除.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">banned_peers</tt></td>
 <td>string. This string has the same format as <tt class="docutils literal">peers</tt> but
 instead represent IPv4 peers that we have banned.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 格式与 <tt class="docutils literal">peers</tt> 相同, 但是表示的是我们 banned 的 peers.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">peers6</tt></td>
 <td>string. This string contains IPv6 and port pairs of peers we
@@ -537,9 +652,16 @@ were connected to last session. The endpoints are in compact
 representation. 16 bytes IPv6 address followed by 2 bytes
 port. The length of this string should be divisible by 18.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 这个字符串包含在最新的会话中连接上的 peers 的信息(IPv6地址以及对应端口). 这些 endpoints 使用紧凑型表示. 16字节的 IPv6 地址紧接着是2字节
+的端口信息. 因此, 字符串的长度可以被18整除.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">banned_peers6</tt></td>
 <td>string. This string has the same format as <tt class="docutils literal">peers6</tt> but
 instead represent IPv6 peers that we have banned.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">字符串. 格式与 <tt class="docutils literal">peers6</tt> 相同, 但是表示的是我们 banned 的 peers.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">unfinished</tt></td>
 <td><p class="first">list of dictionaries. Each dictionary represents an
@@ -567,6 +689,27 @@ blocks specified by <tt class="docutils literal">bitmask</tt>.</td>
 </table>
 </td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3"><p class="first">字典列表. 每个字典代表一个分片, 有以下布局:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><tt class="docutils literal">piece</tt></td>
+<td>整型值, 该记录所指的分片索引.</td>
+</tr>
+<tr><td><tt class="docutils literal">bitmask</tt></td>
+<td>整型值, 一个二进制位图来表示分片已经下载了哪些分块.</td>
+</tr>
+<tr><td><tt class="docutils literal">adler32</tt></td>
+<td>由 <tt class="docutils literal">bitmask</tt> 指定的分块数据的 adler32 校验和.</td>
+</tr>
+</tbody>
+</table>
+</font></td>
+</tr>
 <tr><td><tt class="docutils literal">file sizes</tt></td>
 <td>list where each entry corresponds to a file in the file list
 in the metadata. Each entry has a list of two values, the
@@ -577,6 +720,13 @@ All the files must match exactly this information in order
 to consider the resume data as current. Otherwise a full
 re-check is issued.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">列出每个记录在元数据中的文件列表所对应的文件. 
+	每个记录是包含两个值的一个列表, 第一个值是文件大小并以字节数表示, 
+第二个值是最后一次写入数据的时间戳.
+这个信息用于与磁盘上的实际文件比较.
+要视恢复数据为当前可用的话, 所有的文件都要符合这个信息. 否则将会完全重新检查一次.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">allocation</tt></td>
 <td>The allocation mode for the storage. Can be either <tt class="docutils literal">full</tt>
 or <tt class="docutils literal">compact</tt>. If this is full, the file sizes and
@@ -584,85 +734,116 @@ timestamps are disregarded. Pieces are assumed not to have
 moved around even if the files have been modified after the
 last resume data checkpoint.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">存储的分配模式. 可以是 <tt class="docutils literal">full</tt>
+或者 <tt class="docutils literal">compact</tt>. 如果是 full, 会忽略文件大小和时间戳. 假设分片没有移动即使在最近一次恢复数据检查时被编辑过.</font></td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="section" id="storage-allocation">
-<h1>storage allocation</h1>
+<h1>storage allocation(存储分配)</h1>
 <p>There are two modes in which storage (files on disk) are allocated in libtorrent.</p>
+<p><font color="#0000E3">在 libtorrent 中有两种磁盘分配模式.</font></p>
 <ol class="arabic simple">
 <li>The traditional <em>full allocation</em> mode, where the entire files are filled up
 with zeros before anything is downloaded. Files are allocated on demand, the
 first time anything is written to them. The main benefit of this mode is that
 it avoids creating heavily fragmented files.</li>
+<li><font color="#0000E3">传统的 <em>full allocation</em> 模式, 下载之前整个文件以0填充. 文件按需分配, 一开始不会写入任何东西. 
+	这种模式的主要好处是避免产生碎片文件.</font></li>
 <li>The <em>sparse allocation</em>, sparse files are used, and pieces are downloaded
 directly to where they belong. This is the recommended (and default) mode.</li>
+<li><font color="#0000E3"><em>sparse allocation</em> 模式, 使用稀疏文件, 然后分片直接下载到相应的位置. 这个是推荐 (而且默认) 的模式.</font></li>
 </ol>
 <p>In previous versions of libtorrent, a 3rd mode was supported, <em>compact
 allocation</em>. Support for this is deprecated and will be removed in future
 versions of libtorrent. It's still described in here for completeness.</p>
+<p><font color="#0000E3">在早期的 libtorrent 版本中, 支持第三种模式, <em>compact
+allocation</em>. 整个支持将会被弃用并且在后续的版本中会移除该支持. 目前这里仍有完整的描述.</font></p>
 <p>The allocation mode is selected when a torrent is started. It is passed as an
 argument to <a class="reference external" href="reference-Session.html#add_torrent()">session::add_torrent()</a> or <a class="reference external" href="reference-Session.html#async_add_torrent()">session::async_add_torrent()</a>.</p>
+<p><font color="#0000E3">Torrent 开始的时候会选择分配模式. 它作为一个参数传给 <a class="reference external" href="reference-Session.html#add_torrent()">session::add_torrent()</a> 或者 <a class="reference external" href="reference-Session.html#async_add_torrent()">session::async_add_torrent()</a>.</font></p>
 <p>The decision to use full allocation or compact allocation typically depends on
 whether any files have priority 0 and if the filesystem supports sparse files.</p>
+<p><font color="#0000E3">决定使用 full 分配模式还是 compact 分配模式取决于是否文件有优先级0然后如果文件系统支持稀疏文件的话.</font></p>
 <div class="section" id="sparse-allocation">
-<h2>sparse allocation</h2>
+<h2>sparse allocation(稀疏分配)</h2>
 <p>On filesystems that supports sparse files, this allocation mode will only use
 as much space as has been downloaded.</p>
+<p><font color="#0000E3">在支持稀疏文件的文件系统上, 这种分配模式是下载多少然后使用多少空间.</font></p>
 <p>The main drawback of this mode is that it may create heavily fragmented files.</p>
+<p><font color="#0000E3">这种模式的主要缺点是可能会产生大量的碎片文件.</font></p>
 <blockquote>
 <ul class="simple">
 <li>It does not require an allocation pass on startup.</li>
+<li><font color="#0000E3">它不需要在启动的时候传递参数.</font></li>
 </ul>
 </blockquote>
 </div>
 <div class="section" id="full-allocation">
-<h2>full allocation</h2>
+<h2>full allocation(全额分配)</h2>
 <p>When a torrent is started in full allocation mode, the disk-io thread
 will make sure that the entire storage is allocated, and fill any gaps with zeros.
 It will of course still check for existing pieces and fast resume data. The main
 drawbacks of this mode are:</p>
+<p><font color="#0000E3">Torrent 以 full 分配模式开始的话, 磁盘 IO 线程会保证分配完整的存储, 然后所有空间以0填充.
+当然还是会检查所有存在的分片以及快速恢复数据. 该模式的主要缺点是:</font></p>
 <blockquote>
 <ul class="simple">
 <li>It may take longer to start the torrent, since it will need to fill the files
 with zeroes. This delay is linear to the size of the download.</li>
+<li><font color="#0000E3">开始 torrent 的时间会花更多, 因为需要给文件填0. 
+	这个延迟时间随下载的文件大小线性变化.</font></li>
 <li>The download may occupy unnecessary disk space between download sessions.</li>
+<li><font color="#0000E3">下载会占用不必要的磁盘空间.</font></li>
 <li>Disk caches usually perform poorly with random access to large files
 and may slow down the download some.</li>
+<li><font color="#0000E3">随机访问大文件的磁盘缓存性能一般会差然后可能会使下载变慢.</font></li>
 </ul>
 </blockquote>
 <p>The benefits of this mode are:</p>
+<p><font color="#0000E3">这种模式的好处是:</font></p>
 <blockquote>
 <ul class="simple">
 <li>Downloaded pieces are written directly to their final place in the files and
 the total number of disk operations will be fewer and may also play nicer to
 filesystems' file allocation, and reduce fragmentation.</li>
+<li><font color="#0000E3">下载的分片直接文件中的最终位置然后整个的磁盘操作会变少, 可能对文件系统的文件分配更友好, 减少碎片.</font></li>
 <li>No risk of a download failing because of a full disk during download, once
 all files have been created.</li>
+<li><font color="#0000E3">没有下载失败的风险因为下载时已经分配了完整的磁盘空间, 当所有文件创建的时候.</font></li>
 </ul>
 </blockquote>
 </div>
 <div class="section" id="compact-allocation">
-<h2>compact allocation</h2>
+<h2>compact allocation(紧凑分配)</h2>
 <div class="note">
-<p class="first admonition-title">Note</p>
+<p class="first admonition-title">Note(注意)</p>
 <p class="last">Note that support for compact allocation is deprecated in libttorrent, and will
 be removed in future versions.</p>
+<p class="last"><font color="#0000E3">该模式已弃用, 后续版本会移除该支持.</font></p>
 </div>
 <p>The compact allocation will only allocate as much storage as it needs to keep
 the pieces downloaded so far. This means that pieces will be moved around to be
 placed at their final position in the files while downloading (to make sure the
 completed download has all its pieces in the correct place). So, the main
 drawbacks are:</p>
+<p><font color="#0000E3">这个 compact 分配模式只会分配当前已下载的分片的存储. 
+	这意味着分片在下载的时候会被移动到它在文件中的最终位置 (确保下载完成时每个分片的位置正确). 也就是说, 主要缺点是:</font></p>
 <blockquote>
 <ul class="simple">
 <li>More disk operations while downloading since pieces are moved around.</li>
+<li><font color="#0000E3">因为分片在下载时会被移动, 所以需要更多的磁盘操作.</font></li>
 <li>Potentially more fragmentation in the filesystem.</li>
+<li><font color="#0000E3">可能在文件系统上产生更多的碎片.</font></li>
 <li>Cannot be used while having files with priority 0.</li>
+<li><font color="#0000E3">文件优先级0的不能使用.</font></li>
 </ul>
 </blockquote>
 <p>The benefits though, are:</p>
+<p><font color="#0000E3">好处如下:</font></p>
 <blockquote>
 <ul class="simple">
 <li>No startup delay, since the files don't need allocating.</li>
