@@ -746,7 +746,7 @@ last resume data checkpoint.</td>
 <h1>storage allocation(存储分配)</h1>
 <p>There are two modes in which storage (files on disk) are allocated in libtorrent.</p>
 <p><font color="#0000E3">在 libtorrent 中有两种磁盘分配模式.</font></p>
-<ol class="arabic simple">
+<ul class="arabic simple">
 <li>The traditional <em>full allocation</em> mode, where the entire files are filled up
 with zeros before anything is downloaded. Files are allocated on demand, the
 first time anything is written to them. The main benefit of this mode is that
@@ -756,7 +756,7 @@ it avoids creating heavily fragmented files.</li>
 <li>The <em>sparse allocation</em>, sparse files are used, and pieces are downloaded
 directly to where they belong. This is the recommended (and default) mode.</li>
 <li><font color="#0000E3"><em>sparse allocation</em> 模式, 使用稀疏文件, 然后分片直接下载到相应的位置. 这个是推荐 (而且默认) 的模式.</font></li>
-</ol>
+</ul>
 <p>In previous versions of libtorrent, a 3rd mode was supported, <em>compact
 allocation</em>. Support for this is deprecated and will be removed in future
 versions of libtorrent. It's still described in here for completeness.</p>
@@ -847,79 +847,114 @@ drawbacks are:</p>
 <blockquote>
 <ul class="simple">
 <li>No startup delay, since the files don't need allocating.</li>
+<li><font color="#0000E3">没有启动延迟, 因为文件不需要分配存储.</font></li>
 <li>The download will not use unnecessary disk space.</li>
+<li><font color="#0000E3">下载时不会使用不必要的磁盘空间.</font></li>
 <li>Disk caches perform much better than in full allocation and raises the
 download speed limit imposed by the disk.</li>
+<li><font color="#0000E3">磁盘缓存比 full 分配模式表现的更好然后提高了磁盘对下载速度的限制.</font></li>
 <li>Works well on filesystems that don't support sparse files.</li>
+<li><font color="#0000E3">在不支持稀疏文件的文件系统上可以工作的很好.</font></li>
 </ul>
 </blockquote>
 <p>The algorithm that is used when allocating pieces and slots isn't very
 complicated. For the interested, a description follows.</p>
+<p><font color="#0000E3">当分片和槽位分配不复杂的情况下可以使用. 感兴趣的话, 下面是一些介绍.</font></p>
 <p>storing a piece:</p>
-<ol class="arabic simple">
-<li>let <strong>A</strong> be a newly downloaded piece, with index <strong>n</strong>.</li>
-<li>let <strong>s</strong> be the number of slots allocated in the file we're
+<p><font color="#0000E3">存储一个分片:</font></p>
+<ul class="arabic simple">
+<li>1. let <strong>A</strong> be a newly downloaded piece, with index <strong>n</strong>.</li>
+<li><font color="#0000E3">1. <strong>A</strong> 是新下载的分片, 索引为 <strong>n</strong>.</font></li>
+<li>2. let <strong>s</strong> be the number of slots allocated in the file we're
 downloading to. (the number of pieces it has room for).</li>
-<li>if <strong>n</strong> &gt;= <strong>s</strong> then allocate a new slot and put the piece there.</li>
-<li>if <strong>n</strong> &lt; <strong>s</strong> then allocate a new slot, move the data at
+<li><font color="#0000E3">2. <strong>s</strong> 是对应正在下载的文件分配的槽位数目. (即分片所需要的空间).</font></li>
+<li>3. if <strong>n</strong> &gt;= <strong>s</strong> then allocate a new slot and put the piece there.</li>
+<li><font color="#0000E3">3. 如果 <strong>n</strong> &gt;= <strong>s</strong> 那么会分配一个新的槽位然后把分片放到那里.</font></li>
+<li>4. if <strong>n</strong> &lt; <strong>s</strong> then allocate a new slot, move the data at
 slot <strong>n</strong> to the new slot and put <strong>A</strong> in slot <strong>n</strong>.</li>
-</ol>
+<li><font color="#0000E3">4. 如果 <strong>n</strong> &lt; <strong>s</strong> 那么会分配一个新的槽位, 把槽位为 <strong>n</strong> 的数据移动到新的槽位然后把槽位 <strong>A</strong> 的数据放到槽位 <strong>n</strong>.</font></li>
+</ul>
 <p>allocating a new slot:</p>
-<ol class="arabic simple">
-<li>if there's an unassigned slot (a slot that doesn't
+<p><font color="#0000E3">分配一个新的槽位:</font></p>
+<ul class="arabic simple">
+<li>1. if there's an unassigned slot (a slot that doesn't
 contain any piece), return that slot index.</li>
-<li>append the new slot at the end of the file (or find an unused slot).</li>
-<li>let <strong>i</strong> be the index of newly allocated slot</li>
-<li>if we have downloaded piece index <strong>i</strong> already (to slot <strong>j</strong>) then<ol class="arabic">
+<li><font color="#0000E3">1. 如果有尚未分配的槽位 (不包含任何分片的槽位), 直接返回这个槽位的索引.</font></li>
+<li>2. append the new slot at the end of the file (or find an unused slot).</li>
+<li><font color="#0000E3">2. 把新的槽位加到文件末尾 (或者找个未被使用的槽位).</font></li>
+<li>3. let <strong>i</strong> be the index of newly allocated slot</li>
+<li><font color="#0000E3">3. <strong>i</strong> 是新分配的槽位的索引</font></li>
+<li>4. if we have downloaded piece index <strong>i</strong> already (to slot <strong>j</strong>) then<ol class="arabic">
 <li>move the data at slot <strong>j</strong> to slot <strong>i</strong>.</li>
 <li>return slot index <strong>j</strong> as the newly allocated free slot.</li>
 </ol>
 </li>
-<li>return <strong>i</strong> as the newly allocated slot.</li>
+<li><font color="#0000E3">4. 如果我们有下载完成的分片, 索引为 <strong>i</strong> (对应到槽位 <strong>j</strong>) 那么<ol class="arabic">
+<li>把槽位 <strong>j</strong> 的数据移动到槽位 <strong>i</strong> 上.</li>
+<li>把槽位 <strong>j</strong> 的索引作为新分配的分片的索引返回.</li>
 </ol>
+</font></li>
+<li>5. return <strong>i</strong> as the newly allocated slot.</li>
+<li><font color="#0000E3">5. 返回新分配的槽位的索引 <strong>i</strong>.</font></li>
+</ul>
 </div>
 </div>
 <div class="section" id="http-seeding">
-<h1>HTTP seeding</h1>
+<h1>HTTP seeding(HTTP 做种)</h1>
 <p>There are two kinds of HTTP seeding. One with that assumes a smart (and polite)
 client and one that assumes a smart server. These are specified in <a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a>
 and <a class="reference external" href="http://bittorrent.org/beps/bep_0017.html">BEP 17</a> respectively.</p>
+<p><font color="#0000E3">有两种 HTTP 做种的方式. 一种是轻量 (而且简单的)
+客户端然后另一种轻量的服务端. 这两种分别在 <a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a>
+和 <a class="reference external" href="http://bittorrent.org/beps/bep_0017.html">BEP 17</a> 中有提到.</font></p>
 <p>libtorrent supports both. In the libtorrent source code and API, BEP 19 urls
 are typically referred to as <em>url seeds</em> and BEP 17 urls are typically referred
 to as <em>HTTP seeds</em>.</p>
+<p><font color="#0000E3">libtorrent 这两种都支持. 在 libtorrent 的源码和 API 中, BEP 19 URL
+通常指的是 <em>url seeds</em> 然后 BEP 17 URL 通常指的是 <em>HTTP seeds</em>.</font></p>
 <p>The libtorrent implementation of <a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a> assumes that, if the URL ends with a
 slash ('/'), the filename should be appended to it in order to request pieces
 from that file. The way this works is that if the torrent is a single-file
 torrent, only that filename is appended. If the torrent is a multi-file
 torrent, the torrent's name '/' the file name is appended. This is the same
 directory structure that libtorrent will download torrents into.</p>
+<p><font color="#0000E3">libtorrent 的 <a class="reference external" href="http://bittorrent.org/beps/bep_0019.html">BEP 19</a> 实现假定是这样的, 如果 URL 以
+斜杠 ('/') 结尾, 那么文件名要添加到斜杠后面才能请求分片. 这种方式针对于单个文件的 torrent, 只需要添加文件名. 如果是多文件的
+torrent, 会添加 torrent 的名称. 和 libtorrent 要下载的 torrents 的目录结构一致.</font></p>
 </div>
 <div class="section" id="piece-picker">
-<h1>piece picker</h1>
+<h1>piece picker(分片选择)</h1>
 <p>The piece picker in libtorrent has the following features:</p>
+<p><font color="#0000E3">libtorrent 有以下这些分片选择方式:</font></p>
 <ul class="simple">
-<li>rarest first</li>
-<li>sequential download</li>
-<li>random pick</li>
-<li>reverse order picking</li>
-<li>parole mode</li>
-<li>prioritize partial pieces</li>
-<li>prefer whole pieces</li>
-<li>piece affinity by speed category</li>
-<li>piece priorities</li>
+<li>rarest first (最少优先)</li>
+<li>sequential download (顺序下载)</li>
+<li>random pick (随机选择)</li>
+<li>reverse order picking (倒序选择)</li>
+<li>parole mode (?)</li>
+<li>prioritize partial pieces (部分分片优先)</li>
+<li>prefer whole pieces (偏好整个分片)</li>
+<li>piece affinity by speed category (基于速度策略的分片选择)</li>
+<li>piece priorities (按分片优先级)</li>
 </ul>
 <div class="section" id="internal-representation">
-<h2>internal representation</h2>
+<h2>internal representation(内部表现)</h2>
 <p>It is optimized by, at all times, keeping a list of pieces ordered by rarity,
 randomly shuffled within each rarity class. This list is organized as a single
 vector of contigous memory in RAM, for optimal memory locality and to eliminate
 heap allocations and frees when updating rarity of pieces.</p>
+<p><font color="#0000E3">这是优化的, 随时会保存一个按稀有程度排序的分片列表,
+在每一种稀有等级内随机打乱. 整个列表可以认为是在内存中单向相邻的, 更新分片优先级时消除堆内存分配
+和释放达到优化本地内存的目的.</font></p>
 <p>Expensive events, like a peer joining or leaving, are evaluated lazily, since
 it's cheaper to rebuild the whole list rather than updating every single piece
 in it. This means as long as no blocks are picked, peers joining and leaving is
 no more costly than a single peer joining or leaving. Of course the special
 cases of peers that have all or no pieces are optimized to not require
 rebuilding the list.</p>
+<p><font color="#0000E3">耗费高昂的事件, 例如 peer 的加入或者离开, 这是贪心算法, 因为重建整个列表比在列表中更新每个单独的分片来的容易. 
+	这意味着只要没有选择分块, peers 加入或者离开不会比单个 peer 加入或者离开耗费更多. 当然也有特例, 那些有所有或者没有分片的 peers, 会做一些优化处理,
+也就是不会重建列表.</font></p>
 </div>
 <div class="section" id="picker-strategy">
 <h2>picker strategy</h2>
