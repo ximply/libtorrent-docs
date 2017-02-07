@@ -957,13 +957,15 @@ rebuilding the list.</p>
 也就是不会重建列表.</font></p>
 </div>
 <div class="section" id="picker-strategy">
-<h2>picker strategy</h2>
+<h2>picker strategy(分片选择策略)</h2>
 <p>The normal mode of the picker is of course <em>rarest first</em>, meaning pieces that
 few peers have are preferred to be downloaded over pieces that more peers have.
 This is a fundamental algorithm that is the basis of the performance of
 bittorrent. However, the user may set the piece picker into sequential download
 mode. This mode simply picks pieces sequentially, always preferring lower piece
 indices.</p>
+<p><font color="#0000E3">一般的分片选择策略自然是 <em>最少优先</em>, 意味着更喜欢下载那些在 peers 中比较少的分片.
+这是一种基于 bittorrent 性能的基本算法. 然而, 用户可能会设置成顺序下载模式. 这种模式简单地按顺序选择分片, 总是下载更低索引的分片.</font></p>
 <p>When a torrent starts out, picking the rarest pieces means increased risk that
 pieces won't be completed early (since there are only a few peers they can be
 downloaded from), leading to a delay of having any piece to offer to other
@@ -973,9 +975,13 @@ ramp-up time. The heuristic to mitigate this problem is to, for the first few
 pieces, pick random pieces rather than rare pieces. The threshold for when to
 leave this initial picker mode is determined by
 <a class="reference external" href="reference-Settings.html#initial_picker_threshold">session_settings::initial_picker_threshold</a>.</p>
+<p><font color="#0000E3">当有 torrent 开始退出, 最少优先意味着增加了推迟完成下载的风险 (因为只能从少数 peers 那边下载), 
+	导致延迟提供分片给其他 peers. 缺少可交换的分片, 推迟客户端进入正常的 bittorrent 的以牙还牙的模式, 然后导致一个长期的
+ramp-up 时间. 解决这个问题的试探方法是, 对于最开始的少数分片, 随机选择而非选择最少的. 脱离初始的选择分片的模式的阈值是由
+<a class="reference external" href="reference-Settings.html#initial_picker_threshold">session_settings::initial_picker_threshold</a> 设置.</font></p>
 </div>
 <div class="section" id="reverse-order">
-<h2>reverse order</h2>
+<h2>reverse order(倒序)</h2>
 <p>An orthogonal setting is <em>reverse order</em>, which is used for <em>snubbed</em> peers.
 Snubbed peers are peers that appear very slow, and might have timed out a piece
 request. The idea behind this is to make all snubbed peers more likely to be
@@ -983,9 +989,13 @@ able to do download blocks from the same piece, concentrating slow peers on as
 few pieces as possible. The reverse order means that the most common pieces are
 picked, instead of the rarest pieces (or in the case of sequential download,
 the last pieces, intead of the first).</p>
+<p><font color="#0000E3">一种正交的配置是 <em>倒序</em>, 用于 <em>snubbed</em> peers.
+Snubbed peers 是一种出现很慢, 然后可能请求分片会超时的 peers. 这个设计意图是使得所有的 snubbed peers 更有可能从相同的分片下载到分块, 
+在尽可能少的分片的问题上集中慢速的 peers. 倒序意味着大部分普通的分片会被选择, 代替了稀有分片 (或者在顺序下载的情况下,
+最后一个分片, 代替了第一个分片先进行下载).</font></p>
 </div>
 <div class="section" id="parole-mode">
-<h2>parole mode</h2>
+<h2>parole mode(?)</h2>
 <p>Peers that have participated in a piece that failed the hash check, may be put
 in <em>parole mode</em>. This means we prefer downloading a full piece  from this
 peer, in order to distinguish which peer is sending corrupt data. Whether to do
@@ -995,7 +1005,7 @@ a given peer, avoiding picking any blocks from a piece any other peer has
 contributed to (since that would defeat the purpose of parole mode).</p>
 </div>
 <div class="section" id="prioritize-partial-pieces">
-<h2>prioritize partial pieces</h2>
+<h2>prioritize partial pieces(部分分片优先)</h2>
 <p>This setting determines if partially downloaded or requested pieces should
 always be preferred over other pieces. The benefit of doing this is that the
 number of partial pieces is minimized (and hence the turn-around time for
