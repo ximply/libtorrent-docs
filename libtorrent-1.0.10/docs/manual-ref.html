@@ -1000,9 +1000,12 @@ Snubbed peers 是一种出现很慢, 然后可能请求分片会超时的 peers.
 in <em>parole mode</em>. This means we prefer downloading a full piece  from this
 peer, in order to distinguish which peer is sending corrupt data. Whether to do
 this is or not is controlled by <a class="reference external" href="reference-Settings.html#use_parole_mode">session_settings::use_parole_mode</a>.</p>
+<p><font color="#0000E3">Peers 如果有哈希校验失败, 可能会进入 <em>parole mode</em>. 
+	这意味着我们更喜欢从这个 peer 下载一个完整的分片, 为了区分发送脏数据的 peer. 是否这么做可以由 <a class="reference external" href="reference-Settings.html#use_parole_mode">session_settings::use_parole_mode</a> 来控制.</font></p>	
 <p>In parole mode, the piece picker prefers picking one whole piece at a time for
 a given peer, avoiding picking any blocks from a piece any other peer has
 contributed to (since that would defeat the purpose of parole mode).</p>
+<p><font color="#0000E3">在 parole mode 中, 对于一个给定的 peer 这种分片选择策略更倾向于一次选择一整个分片, 避免从拥有这个分片的其他 peer 那边选择分块 (因为那将反作用于 parole mode 的意图).</font></p>
 </div>
 <div class="section" id="prioritize-partial-pieces">
 <h2>prioritize partial pieces(部分分片优先)</h2>
@@ -1013,32 +1016,48 @@ downloading a block until it can be uploaded to others is minimized). It also
 puts less stress on the disk cache, since fewer partial pieces need to be kept
 in the cache. Whether or not to enable this is controlled by
 <a class="reference external" href="reference-Settings.html#prioritize_partial_pieces">session_settings::prioritize_partial_pieces</a>.</p>
+<p><font color="#0000E3">这个配置项决定是否部分下载的或者请求的分片应当总是优先于其他分片. 这样做的好处是部分分片的数目最少 (因此下载一个分块的时间直到它可以给其他人上传是最少的). 
+	它对磁盘缓存的压力会小一些, 因为更少的部分的分片需要保持在缓存中. 
+	是否开启该选项由
+<a class="reference external" href="reference-Settings.html#prioritize_partial_pieces">session_settings::prioritize_partial_pieces</a> 控制.</font></p>	
 <p>The main benefit of not prioritizing partial pieces is that the rarest first
 algorithm gets to have more influence on which pieces are picked. The picker is
 more likely to truly pick the rarest piece, and hence improving the performance
 of the swarm.</p>
+<p><font color="#0000E3">部分分片优先的主要好处是最少优先算法在哪些分片被选上择影响更多. 这种选择方式更有可能选中最稀有的分片, 
+	从而提高了集群的性能.</font></p>
 <p>This setting is turned on automatically whenever the number of partial pieces
 in the piece picker exceeds the number of peers we're connected to times 1.5.
 This is in order to keep the waste of partial pieces to a minimum, but still
 prefer rarest pieces.</p>
+<p><font color="#0000E3">当分片选择中部分分片的数目超过我们连接的 peers 的数目的1.5 倍时这个配置项会被自动开启.
+这是为了保持浪费最少的部分分片, 但还是更偏好稀有分片.</font></p>
 </div>
 <div class="section" id="prefer-whole-pieces">
-<h2>prefer whole pieces</h2>
+<h2>prefer whole pieces(偏好整个分片)</h2>
 <p>The <em>prefer whole pieces</em> setting makes the piece picker prefer picking entire
 pieces at a time. This is used by web connections (both http seeding
 standards), in order to be able to coalesce the small bittorrent requests to
 larger HTTP requests. This significantly improves performance when downloading
 over HTTP.</p>
+<p><font color="#0000E3">这个 <em>偏好整个分片</em> 的配置项使得选择分片每次更喜欢选择完整的分片. 
+	这个用于 WEB 连接 (包括 HTTP Seeding 标准), 为了能够合并小的 bittorrent 请求为更大的 HTTP 请求. 这个对于通过 HTTP 下载的性能提高极具意义.</font></p>
 <p>It is also used by peers that are downloading faster than a certain threshold.
 The main advantage is that these peers will better utilize the other peer's
 disk cache, by requesting all blocks in a single piece, from the same peer.</p>
+<p><font color="#0000E3">它也可以用于下载快于某一个阈值时.
+主要的优势是 peers 可以更好地利用其它 peers 的
+磁盘缓存, 通过在单一个分片中请求所有分块, 从同一个 peer.</font></p>
 <p>This threshold is controlled by <a class="reference external" href="reference-Settings.html#whole_pieces_threshold">session_settings::whole_pieces_threshold</a>.</p>
+<p><font color="#0000E3">这个阈值通过 <a class="reference external" href="reference-Settings.html#whole_pieces_threshold">session_settings::whole_pieces_threshold</a> 控制.</font></p>
 <p><em>TODO: piece affinity by speed category</em>
 <em>TODO: piece priorities</em></p>
+<p><font color="#0000E3"><em>待写: 基于速度策略的分片选择</em>
+<em>待写: 按分片优先级</em></font></p>
 </div>
 </div>
 <div class="section" id="ssl-torrents">
-<h1>SSL torrents</h1>
+<h1>SSL torrents(SSL torrents)</h1>
 <p>Torrents may have an SSL root (CA) certificate embedded in them. Such torrents
 are called <em>SSL torrents</em>. An SSL torrent talks to all bittorrent peers over
 SSL. The protocols are layered like this:</p>
