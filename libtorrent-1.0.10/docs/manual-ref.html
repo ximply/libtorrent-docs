@@ -1061,6 +1061,8 @@ disk cache, by requesting all blocks in a single piece, from the same peer.</p>
 <p>Torrents may have an SSL root (CA) certificate embedded in them. Such torrents
 are called <em>SSL torrents</em>. An SSL torrent talks to all bittorrent peers over
 SSL. The protocols are layered like this:</p>
+<p><font color="#0000E3">Torrents 可能会嵌入一个 SSL 根 (CA) 证书. 这类的 torrents
+叫做 <em>SSL torrents</em>. SSL torrent 通过 SSL与其他 bittorrent peers 通信. 协议分层如下图:</font></p>
 <img alt="utp_stack.png" src="utp_stack.png" />
 <p>During the SSL handshake, both peers need to authenticate by providing a
 certificate that is signed by the CA certificate found in the .torrent file.
@@ -1068,23 +1070,38 @@ These peer certificates are expected to be privided to peers through some other
 means than bittorrent. Typically by a peer generating a certificate request
 which is sent to the publisher of the torrent, and the publisher returning a
 signed certificate.</p>
+<p><font color="#0000E3">SSL 握手时, 所有的 peers 需要通过提供来自 CA 签发的在 .torrent 文件中可以找到的证书进行认证.
+这些 peer 证书可以通过非 bittorrent 的方式提供. 通常由 peer 生成证书请求, 然后被发送到 torrent 的发布者, 然后发布者返回一个签名的证书.</font></p>
 <p>In libtorrent, <a class="reference external" href="reference-Core.html#set_ssl_certificate()">set_ssl_certificate()</a> in <a class="reference external" href="reference-Core.html#torrent_handle">torrent_handle</a> is used to tell
 libtorrent where to find the peer certificate and the private key for it. When
 an SSL torrent is loaded, the <a class="reference external" href="reference-Alerts.html#torrent_need_cert_alert">torrent_need_cert_alert</a> is posted to remind the
 user to provide a certificate.</p>
+<p><font color="#0000E3">在 libtorrent 中, <a class="reference external" href="reference-Core.html#set_ssl_certificate()">set_ssl_certificate()</a> 在 <a class="reference external" href="reference-Core.html#torrent_handle">torrent_handle</a> 中用于告知
+libtorrent 从何处找到 peer 证书以及私钥. 当 SSL torrent 加载后, 叫做 <a class="reference external" href="reference-Alerts.html#torrent_need_cert_alert">torrent_need_cert_alert</a> 的警报将会被投递, 然后提醒用户提供证书.</font></p>
 <p>A peer connecting to an SSL torrent MUST provide the <em>SNI</em> TLS extension
 (server name indication). The server name is the hex encoded info-hash of the
 torrent to connect to. This is required for the client accepting the connection
 to know which certificate to present.</p>
+<p><font color="#0000E3">Peer 连接到 SSL torrent 必需提供 <em>SNI</em> TLS 扩展
+(服务器名称标识). 服务器名称是16进制编码的我们所连接的 torrent 的 info-hash 值. 
+这是接受连接的客户端知道提交哪种证书所需要的.</font></p>
 <p>SSL connections are accepted on a separate socket from normal bittorrent
 connections. To pick which port the SSL socket should bind to, set
 <a class="reference external" href="reference-Settings.html#ssl_listen">session_settings::ssl_listen</a> to a different port. It defaults to port 4433.
 This setting is only taken into account when the normal listen socket is opened
 (i.e. just changing this setting won't necessarily close and re-open the SSL
 socket). To not listen on an SSL socket at all, set <tt class="docutils literal">ssl_listen</tt> to 0.</p>
+<p><font color="#0000E3">SSL 连接是不同于普通的 bittorrent
+连接. 为了指定 SSL 套接字要绑定的端口, 设置
+<a class="reference external" href="reference-Settings.html#ssl_listen">session_settings::ssl_listen</a> 为不同端口. 默认端口是 4433.
+This setting is only taken into account 当普通套接字已经打开这个配置项才会被考虑在内
+(i.e. 只需更改这个配置不必关闭以及重开 SSL
+套接字). 不想监听 SSL 套接字, 设置 <tt class="docutils literal">ssl_listen</tt> 为 0.</font></p>
 <p>This feature is only available if libtorrent is build with openssl support
 (<tt class="docutils literal">TORRENT_USE_OPENSSL</tt>) and requires at least openSSL version 1.0, since it
 needs SNI support.</p>
+<p><font color="#0000E3">这个功能只有在 libtorrent 构建时开启了 openssl 支持才可用
+(<tt class="docutils literal">TORRENT_USE_OPENSSL</tt>) 而且需要 openSSL 版本至少是 1.0, 因为它需要 SNI 支持.</font></p>
 <p>Peer certificates must have at least one <em>SubjectAltName</em> field of type
 dNSName. At least one of the fields must <em>exactly</em> match the name of the
 torrent. This is a byte-by-byte comparison, the UTF-8 encoding must be
@@ -1093,17 +1110,28 @@ recommended way of verifying certificates for HTTPS servers according to <a clas
 2818</a>. Note the difference that for torrents only <em>dNSName</em> fields are taken
 into account (not IP address fields). The most specific (i.e. last) <em>Common
 Name</em> field is also taken into account if no <em>SubjectAltName</em> did not match.</p>
+<p><font color="#0000E3">Peer 证书必须至少有一个 dNSName 类型的 <em>SubjectAltName</em> 字段. 
+	至少有一个字段必须 <em>确切地</em> 匹配 torrent 的名称. 逐字节比较, UTF-8 编码必须完全一致 (i.e. 不能出现 unicode 编码). 
+	对于 HTTPS 服务器这是推荐的校验方式, 根据 <a class="reference external" href="http://www.ietf.org/rfc/rfc2818.txt">RFC
+2818</a>. 注意考虑只有 <em>dNSName</em> 字段的的 torrents 的不同之处 (不是 IP 地址字段). 大部分特定的 (i.e. last) <em>Common
+Name</em> 字段也要考虑如果没有 <em>SubjectAltName</em> 不匹配.</font></p>	
 <p>If any of these fields contain a single asterisk (&quot;*&quot;), the certificate is
 considered covering any torrent, allowing it to be reused for any torrent.</p>
+<p><font color="#0000E3">如果任何一个字段包含一个单独的 (&quot;*&quot;), 这个证书可以认为是覆盖任何 torrent, 允许被任何 torrent 复用.</font></p>
 <p>The purpose of matching the torrent name with the fields in the peer
 certificate is to allow a publisher to have a single root certificate for all
 torrents it distributes, and issue separate peer certificates for each torrent.
 A peer receiving a certificate will not necessarily be able to access all
 torrents published by this root certificate (only if it has a &quot;star cert&quot;).</p>
+<p><font color="#0000E3">在 peer
+证书中用字段匹配 torrent 名称的意图是允许发布者只需要给所有 torrents 分发一个单一的根证书, 然后给每个 torrent 分发独立的 peer 证书.
+Peer 接收到证书后不需要接受通过根证书发布的所有 torrents (只要有一个 &quot;星 证书&quot;).</font></p>
 <div class="section" id="testing">
-<h2>testing</h2>
+<h2>testing(测试)</h2>
 <p>To test incoming SSL connections to an SSL torrent, one can use the following
 <em>openssl</em> command:</p>
+<p><font color="#0000E3">测试 SSL torrent 的 SSL 连接, 可以使用以下
+<em>openssl</em> 命令:</font></p>
 <pre class="literal-block">
 openssl s_client -cert &lt;peer-certificate&gt;.pem -key &lt;peer-private-key&gt;.pem -CAfile \
    &lt;torrent-cert&gt;.pem -debug -connect 127.0.0.1:4433 -tls1 -servername &lt;info-hash&gt;
@@ -1112,9 +1140,12 @@ openssl s_client -cert &lt;peer-certificate&gt;.pem -key &lt;peer-private-key&gt
 account by bittorrent peers. You still need to specify something, but from
 libtorrent's point of view, it doesn't matter what it is. libtorrent only makes
 sure the peer certificates are signed by the correct root certificate.</p>
+<p><font color="#0000E3">生成一个根证书, 辨别名称 (<em>DN</em>) 不被 bittorrent peers 考虑在内. 你仍然需要指定一些东西, 但是从
+libtorrent 来看, 这是没有关系的. libtorrent 只会确保 peer 证书是正确的根证书签发的.</font></p>
 <p>One way to create the certificates is to use the <tt class="docutils literal">CA.sh</tt> script that comes
 with openssl, like thisi (don't forget to enter a common Name for the
 certificate):</p>
+<p><font color="#0000E3">一种生成证书的方式是使用 <tt class="docutils literal">CA.sh</tt> 脚本,  openssl 自带的, 例如 (别忘了给证书输入一个通俗的名称):</font></p>
 <pre class="literal-block">
 CA.sh -newca
 CA.sh -newreq
@@ -1122,8 +1153,12 @@ CA.sh -sign
 </pre>
 <p>The torrent certificate is located in <tt class="docutils literal">./demoCA/private/demoCA/cacert.pem</tt>,
 this is the pem file to include in the .torrent file.</p>
+<p><font color="#0000E3">Torrent 证书放在 <tt class="docutils literal">./demoCA/private/demoCA/cacert.pem</tt>,
+这是包含 .torrent 文件的 pem 文件.</font></p>
 <p>The peer's certificate is located in <tt class="docutils literal">./newcert.pem</tt> and the certificate's
 private key in <tt class="docutils literal">./newkey.pem</tt>.</p>
+<p><font color="#0000E3">Peer 的证书放在 <tt class="docutils literal">./newcert.pem</tt> 然后证书的私钥放在
+ <tt class="docutils literal">./newkey.pem</tt>.</font></p>
 </div>
 </div>
 
