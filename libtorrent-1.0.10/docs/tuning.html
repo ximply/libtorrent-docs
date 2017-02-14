@@ -81,7 +81,7 @@
 </ul>
 </div>
 <div class="section" id="tuning-libtorrent">
-<h1>tuning libtorrent</h1>
+<h1>tuning libtorrent(libtorrent 调优)</h1>
 <p>libtorrent expose most constants used in the bittorrent engine for
 customization through the <tt class="docutils literal">session_settings</tt>. This makes it possible to
 test and tweak the parameters for certain algorithms to make a client
@@ -89,18 +89,27 @@ that fits a wide range of needs. From low memory embedded devices to
 servers seeding thousands of torrents. The default settings in libtorrent
 are tuned for an end-user bittorrent client running on a normal desktop
 computer.</p>
+<p><font color="#0000E3">libtorrent 暴露了大部分的在 bittorrent 引擎中使用的常量用于定制, 
+	通过 <tt class="docutils literal">session_settings</tt>. 这使得为某种算法测试和调整参数然后使得客户端适用广泛的需求成为可能. 
+	从低内存嵌入式设备到做种成千上万的服务器. 在 libtorrent 中默认配置适用于运行在普通桌面计算机上的终端用户的 bittorrent 客户端.</font></p>
 <p>This document describes techniques to benchmark libtorrent performance
 and how parameters are likely to affect it.</p>
+<p><font color="#0000E3">这个文档描述了 libtorrent 性能基准测试的技术以及哪些参数可能有影响.</font></p>
 </div>
 <div class="section" id="reducing-memory-footprint">
-<h1>reducing memory footprint</h1>
+<h1>reducing memory footprint(减少内存占用)</h1>
 <p>These are things you can do to reduce the memory footprint of libtorrent. You get
 some of this by basing your default <tt class="docutils literal">session_settings</tt> on the <tt class="docutils literal">min_memory_usage()</tt>
 setting preset function.</p>
+<p><font color="#0000E3">在 libtorrent 中你可以做这些事情来减少内存占用. 根据默认的
+ <tt class="docutils literal">session_settings</tt> 的预设函数 <tt class="docutils literal">min_memory_usage()</tt>
+的配置你可以知道一些.</font></p>
 <p>Keep in mind that lowering memory usage will affect performance, always profile
 and benchmark your settings to determine if it's worth the trade-off.</p>
+<p><font color="#0000E3">需要记住的是低内存会影响性能, 概括衡量你的配置来确定是否值得妥协.</font></p>
 <p>The typical buffer usage of libtorrent, for a single download, with the cache
 size set to 256 blocks (256 * 16 kiB = 4 MiB) is:</p>
+<p><font color="#0000E3">libtorrent 中典型的缓冲区使用情况 , 对于单个下载, 缓存大小设置为 256 个分块 (256 * 16 kiB = 4 MiB) :</font></p>
 <pre class="literal-block">
 read cache:      128.6 (2058 kiB)
 write cache:     103.5 (1656 kiB)
@@ -110,11 +119,18 @@ hash temp:       0.001 (19 Bytes)
 </pre>
 <p>The receive buffers is proportional to the number of connections we make, and is
 limited by the total number of connections in the session (default is 200).</p>
+<p><font color="#0000E3">接收缓冲区和我们创建的连接数成正比, 然后由会话的连接总数所限制 (默认是 200).</font></p>
 <p>The send buffers is proportional to the number of upload slots that are allowed
 in the session. The default is auto configured based on the observed upload rate.</p>
+<p><font color="#0000E3">发送缓冲区和会话中被允许的上传的槽的数目成正比. 
+	默认是根据对上传速度的观察自动配置.</font></p>
 <p>The read and write cache can be controlled (see section below).</p>
+<p><font color="#0000E3">读写缓存可以控制 (查看下面段落).</font></p>
 <p>The &quot;hash temp&quot; entry size depends on whether or not hashing is optimized for
 speed or memory usage. In this test run it was optimized for memory usage.</p>
+<div class="section" id="disable-disk-cache">
+<p><font color="#0000E3">&quot;hash temp&quot; 记录的大小根据是否 hashing 有优化速度或者内存使用
+. 本次测试优化内存使用.</font></p>
 <div class="section" id="disable-disk-cache">
 <h2>disable disk cache</h2>
 <p>The bulk of the memory libtorrent will use is used for the disk cache. To save
