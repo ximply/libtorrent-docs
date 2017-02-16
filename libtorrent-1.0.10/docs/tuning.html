@@ -132,7 +132,7 @@ speed or memory usage. In this test run it was optimized for memory usage.</p>
 <p><font color="#0000E3">&quot;hash temp&quot; 记录的大小根据是否 hashing 有优化速度或者内存使用
 . 本次测试优化内存使用.</font></p>
 <div class="section" id="disable-disk-cache">
-<h2>disable disk cache</h2>
+<h2>disable disk cache(禁用磁盘缓存)</h2>
 <p>The bulk of the memory libtorrent will use is used for the disk cache. To save
 the absolute most amount of memory, you can disable the cache by setting
 <tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> to 0. You might want to consider using the cache
@@ -141,9 +141,15 @@ but just disable caching read operations. You do this by settings
 memory will be used by the client. Keep in mind that you will degrade performance
 by disabling the cache. You should benchmark the disk access in order to make an
 informed trade-off.</p>
+<p><font color="#0000E3">libtorrent 会因为使用磁盘缓存而使用大量的内存. 为了节约绝大多数的内存
+, 你可以关闭缓存通过设置
+<tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> 为 0. 你可能会考虑使用缓存但只是禁用读操作的缓存. 
+要这么做的话你可以通过设置
+<tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt> 为 false. 这是客户端将使用多少内存的主要因素. 
+但是要记住的是禁用缓存会降低性能. 你应该参考磁盘的访问来作出明智的权衡.</font></p>
 </div>
 <div class="section" id="remove-torrents">
-<h2>remove torrents</h2>
+<h2>remove torrents(删除 torrents)</h2>
 <p>Torrents that have been added to libtorrent will inevitably use up memory, even
 when it's paused. A paused torrent will not use any peer connection objects or
 any send or receive buffers though. Any added torrent holds the entire .torrent
@@ -151,23 +157,39 @@ file in memory, it also remembers the entire list of peers that it's heard about
 (which can be fairly long unless it's capped). It also retains information about
 which blocks and pieces we have on disk, which can be significant for torrents
 with many pieces.</p>
+<p><font color="#0000E3">Torrents 加到 libtorrent 后会立即使用到内存, 即使是暂停的
+. 不过暂停的 torrent 将不会使用任何 peer 连接对象或者
+任何发送或者接收缓冲区. 任何已经添加的 torrent 会保持完整的 .torrent
+文件在内存中, 它也会记住它知道的完整的 peers 列表
+(这个列表可以很长直到到达上限). 它还会保留那些关于我们自己在磁盘上拥有哪些分片和分块的信息
+, 对于有很多分片的 torrents 是有意义的.</font></p>
 <p>If you need to minimize the memory footprint, consider removing torrents from
 the session rather than pausing them. This will likely only make a difference
 when you have a very large number of torrents in a session.</p>
+<p><font color="#0000E3">如果你要把内存使用降到最低, 可以考虑从会话中删除 torrents 而不是暂停它们
+. 当你在一个会话中有大量的 torrents 这个会不一样.</font></p>
 <p>The downside of removing them is that they will no longer be auto-managed. Paused
 auto managed torrents are scraped periodically, to determine which torrents are
 in the greatest need of seeding, and libtorrent will prioritize to seed those.</p>
+<p><font color="#0000E3">删除它们的负面影响是它们不再是自动管理的. 暂停自动管理的
+ torrents 会周期性地 scraped, 决定哪些 torrents 做种需求最强烈, 然后 libtorrent 将优先做种这些 torrents.</font></p>
 </div>
 <div class="section" id="socket-buffer-sizes">
-<h2>socket buffer sizes</h2>
+<h2>socket buffer sizes(套接字缓冲区大小)</h2>
 <p>You can make libtorrent explicitly set the kernel buffer sizes of all its peer
 sockets. If you set this to a low number, you may see reduced throughput, especially
 for high latency connections. It is however an opportunity to save memory per
 connection, and might be worth considering if you have a very large number of
 peer connections. This memory will not be visible in your process, this sets
 the amount of kernel memory is used for your sockets.</p>
+<p><font color="#0000E3">你可以让 libtorrent 显示地设置所有它的 peer 套接字的内核缓冲区大小. 
+	如果你设置一个低的值, 你可以看到吞吐量减少了, 特别是高延迟的连接. 不管怎样这是一个节约每个连接的内存的条件, 
+	如果你有大量的 peer 连接的话也许值得考虑
+. 这些内存在你的进程中不可见, 这些用于你的套接字的内核内存大小的设置.</font></p>
 <p>Change this by setting <tt class="docutils literal"><span class="pre">session_settings::recv_socket_buffer_size</span></tt> and
 <tt class="docutils literal"><span class="pre">session_settings::send_socket_buffer_size</span></tt>.</p>
+<p><font color="#0000E3">更改这些配置可以通过设置 <tt class="docutils literal"><span class="pre">session_settings::recv_socket_buffer_size</span></tt> 和
+<tt class="docutils literal"><span class="pre">session_settings::send_socket_buffer_size</span></tt>.</font></p>
 </div>
 <div class="section" id="peer-list-size">
 <h2>peer list size</h2>
