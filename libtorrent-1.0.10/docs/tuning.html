@@ -192,27 +192,42 @@ the amount of kernel memory is used for your sockets.</p>
 <tt class="docutils literal"><span class="pre">session_settings::send_socket_buffer_size</span></tt>.</font></p>
 </div>
 <div class="section" id="peer-list-size">
-<h2>peer list size</h2>
+<h2>peer list size(peer 列表大小)</h2>
 <p>The default maximum for the peer list is 4000 peers. For IPv4 peers, each peer
 entry uses 32 bytes, which ends up using 128 kB per torrent. If seeding 4 popular
 torrents, the peer lists alone uses about half a megabyte.</p>
+<p><font color="#0000E3">默认的最大的 peer 列表大小是 4000 个 peers. 对于 IPv4 peers, 每个 peer
+ 使用 32 字节, 这样每个 torrent 最多使用 128 kB. 如果做种 4 个热门的
+torrents, peer 列表单独使用大约 0.5 MB.</font></p>
 <p>The default limit is the same for paused torrents as well, so if you have a
 large number of paused torrents (that are popular) it will be even more
 significant.</p>
+<p><font color="#0000E3">默认限制对于暂停的 torrents 也是一样的, 因此如果你有大量
+	暂停的 torrents (那些热门的) 这会变得更有意义.</font></p>
 <p>If you're short of memory, you should consider lowering the limit. 500 is probably
 enough. You can do this by setting <tt class="docutils literal"><span class="pre">session_settings::max_peerlist_size</span></tt> to
 the max number of peers you want in a torrent's peer list. This limit applies per
 torrent. For 5 torrents, the total number of peers in peerlists will be 5 times
 the setting.</p>
+<p><font color="#0000E3">如果你没有足够的内存, 你应该考虑把限制调小. 500 应该已经足够用了. 
+	你可以这么做通过设置 <tt class="docutils literal"><span class="pre">session_settings::max_peerlist_size</span></tt> 为
+你想要的一个 torrent 的 peer 列表的最大peers数. 这个限制可以应用到每个
+torrent. 对于 5 个 torrents, 在 peer 列表中的总的 peers 数目是 5 倍于
+设置值.</font></p>
 <p>You should also lower the same limit but for paused torrents. It might even make sense
 to set that even lower, since you only need a few peers to start up while waiting
 for the tracker and DHT to give you fresh ones. The max peer list size for paused
 torrents is set by <tt class="docutils literal"><span class="pre">session_settings::max_paused_peerlist_size</span></tt>.</p>
+<p><font color="#0000E3">对于暂停的 torrents 你也可以降低同样的限制. 设置更低可能更有意义, 
+	因为你只需要少数的 peers 来预热, 在等待 tracker 和 DHT 给你新的 peers 时. 暂停的 torrents 的 peer 列表的最大值通过 <tt class="docutils literal"><span class="pre">session_settings::max_paused_peerlist_size</span></tt> 进行设置.</font></p>
 <p>The drawback of lowering this number is that if you end up in a position where
 the tracker is down for an extended period of time, your only hope of finding live
 peers is to go through your list of all peers you've ever seen. Having a large
 peer list will also help increase performance when starting up, since the torrent
 can start connecting to peers in parallel with connecting to the tracker.</p>
+<p><font color="#0000E3">降低限制的缺点是如果你最终处于 tracker 宕机很长时间的情况下, 
+	你只能寄希望于从你现有的 peers 里面找到活动的 peers. 拥有大量的 peer 列表也会提高预热性能, 因为 torrent
+可以在连接 tracker 的同时开始连接 peers.</font></p>
 </div>
 <div class="section" id="send-buffer-watermark">
 <h2>send buffer watermark</h2>
