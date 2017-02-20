@@ -129,7 +129,7 @@ in the session. The default is auto configured based on the observed upload rate
 <p>The &quot;hash temp&quot; entry size depends on whether or not hashing is optimized for
 speed or memory usage. In this test run it was optimized for memory usage.</p>
 <div class="section" id="disable-disk-cache">
-<p><font color="#0000E3">&quot;hash temp&quot; 记录的大小根据是否 hashing 有优化速度或者内存使用
+<p><font color="#0000E3">&quot;hash temp&quot; 记录的大小根据是否哈希算法有优化速度或者内存使用
 . 本次测试优化内存使用.</font></p>
 <div class="section" id="disable-disk-cache">
 <h2>disable disk cache(禁用磁盘缓存)</h2>
@@ -256,17 +256,26 @@ a very fast disk, you are less likely see a performance hit.</p>
 <p><font color="#0000E3">调整这个设置时你应该基于你的最大发送速率. 如果你有一个非常快的硬盘, 你几乎看不到有性能方面的问题.</font></p>
 </div>
 <div class="section" id="optimize-hashing-for-memory-usage">
-<h2>optimize hashing for memory usage</h2>
+<h2>optimize hashing for memory usage(为内存使用优化哈希算法)</h2>
 <p>When libtorrent is doing hash checks of a file, or when it re-reads a piece that
 was just completed to verify its hash, there are two options. The default one
 is optimized for speed, which allocates buffers for the entire piece, reads in
 the whole piece in one read call, then hashes it.</p>
+<p><font color="#0000E3">当 libtorrent 对一个文件进行哈希校验时, 或者重新读取一个已经完成的需要校验哈希的分片时, 
+	有两种配置项. 一种是优化速度的
+, 这会为整个完整的分片分配缓冲区, 在一次读取调用时读进完整的分片, 然后进行哈希.</font></p>
 <p>The second option is to optimize for memory usage instead, where a single buffer
 is allocated, and the piece is read one block at a time, hashing it as each
 block is read from the file. For low memory environments, this latter approach
 is recommended. Change this by settings <tt class="docutils literal"><span class="pre">session_settings::optimize_hashing_for_speed</span></tt>
 to false. This will significantly reduce peak memory usage, especially for
 torrents with very large pieces.</p>
+<p><font color="#0000E3">第二种配置是优化内存使用的, 在分配单个缓冲区, 
+	然后整个分片每次读取一个分块, 对从文件读取的每个分块进行哈希
+. 对于更低内存的环境, 后者更推荐使用
+. 改变这些配置通过设置 <tt class="docutils literal"><span class="pre">session_settings::optimize_hashing_for_speed</span></tt>
+为 false. 这对减小内存使用的峰值是有意义的, 特别是有大分片的 
+torrents.</font></p>
 </div>
 <div class="section" id="reduce-executable-size">
 <h2>reduce executable size</h2>
