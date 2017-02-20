@@ -230,20 +230,30 @@ can start connecting to peers in parallel with connecting to the tracker.</p>
 可以在连接 tracker 的同时开始连接 peers.</font></p>
 </div>
 <div class="section" id="send-buffer-watermark">
-<h2>send buffer watermark</h2>
+<h2>send buffer watermark(发送缓冲区水印)</h2>
 <p>The send buffer watermark controls when libtorrent will ask the disk I/O thread
 to read blocks from disk, and append it to a peer's send buffer.</p>
+<p><font color="#0000E3">发送缓冲区水印控制着何时 libtorrent 将请求磁盘 I/O 线程
+从磁盘读取分块, 然后添加到 peer 的发送缓冲区.</font></p>
 <p>When the send buffer has fewer than or equal number of bytes as
 <tt class="docutils literal"><span class="pre">session_settings::send_buffer_watermark</span></tt>, the peer will ask the disk I/O thread
 for more data to send. The trade-off here is between wasting memory by having too
 much data in the send buffer, and hurting send rate by starving out the socket,
 waiting for the disk read operation to complete.</p>
+<p><font color="#0000E3">当发送缓冲区 has 少于或者等于
+<tt class="docutils literal"><span class="pre">session_settings::send_buffer_watermark</span></tt> 的字节数, peer 将请求磁盘 I/O 线程
+发送更多的数据. 这里需要权衡的是在有更多的数据在发送缓冲区中会损耗更多内存, 和通过冷落套接字降低发送速率之间,
+等待磁盘读取操作的完成.</font></p>
 <p>If your main objective is memory usage and you're not concerned about being able
 to achieve high send rates, you can set the watermark to 9 bytes. This will guarantee
 that no more than a single (16 kiB) block will be on the send buffer at a time, for
 all peers. This is the least amount of memory possible for the send buffer.</p>
+<p><font color="#0000E3">如果你的主要目标是内存使用然后你不关心获得高发送速率, 
+	你可以设置水印为 9 字节. 这将会确保每次不多于一个 (16 kiB) 分块在发送缓冲区, 对于所有
+ peers. 这可能是最小的发送缓冲区内存.</font></p>
 <p>You should benchmark your max send rate when adjusting this setting. If you have
 a very fast disk, you are less likely see a performance hit.</p>
+<p><font color="#0000E3">调整这个设置时你应该基于你的最大发送速率. 如果你有一个非常快的硬盘, 你几乎看不到有性能方面的问题.</font></p>
 </div>
 <div class="section" id="optimize-hashing-for-memory-usage">
 <h2>optimize hashing for memory usage</h2>
