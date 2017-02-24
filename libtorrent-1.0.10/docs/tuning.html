@@ -278,22 +278,34 @@ torrents with very large pieces.</p>
 torrents.</font></p>
 </div>
 <div class="section" id="reduce-executable-size">
-<h2>reduce executable size</h2>
+<h2>reduce executable size(减小可执行程序大小)</h2>
 <p>Compilers generally add a significant number of bytes to executables that make use
 of C++ exceptions. By disabling exceptions (-fno-exceptions on GCC), you can
 reduce the executable size with up to 45%. In order to build without exception
 support, you need to patch parts of boost.</p>
+<p><font color="#0000E3">编译器通常添加一个有意义的字节数字到可执行中使得可以使用 C++ 异常. 
+	通过禁用异常 (-fno-exceptions 在 GCC 中), 你可以将
+可执行程序大小减小到 45%. 为了构建无异常版本的支持, 
+你需要打部分 boost 的补丁.</font></p>
 <p>Also make sure to optimize for size when compiling.</p>
+<p><font color="#0000E3">也可以确保编译时对程序大小进行优化.</font></p>
 <p>Another way of reducing the executable size is to disable code that isn't used.
 There are a number of <tt class="docutils literal">TORRENT_*</tt> macros that control which features are included
 in libtorrent. If these macros are used to strip down libtorrent, make sure the same
 macros are defined when building libtorrent as when linking against it. If these
 are different the structures will look different from the libtorrent side and from
 the client side and memory corruption will follow.</p>
+<p><font color="#0000E3">另外一种减小可执行程序大小的方式是禁用不使用的源码.
+有一些 <tt class="docutils literal">TORRENT_*</tt> 宏来控制可以在 libtorrent 中包含哪些功能. 
+如果这些宏用于裁剪 libtorrent, 构建 libtorrent 时确保定义和链接时同样的宏. 如果是不一样的, 
+结构上来看 libtorrent 将不同于客户端, 然后内存占用会遵循.</font></p>
 <p>One, probably, safe macro to define is <tt class="docutils literal">TORRENT_NO_DEPRECATE</tt> which removes all
 deprecated functions and struct members. As long as no deprecated functions are
 relied upon, this should be a simple way to eliminate a little bit of code.</p>
+<p><font color="#0000E3">有一点, 也许, 安全的宏定义是 <tt class="docutils literal">TORRENT_NO_DEPRECATE</tt>, 移除所有
+弃用的函数和结构体成员. 只要没有依赖于弃用的函数, 删除一些函数将会变得很简单.</font></p>
 <p>For all available options, see the <a class="reference external" href="building.html">building libtorrent</a> secion.</p>
+<p><font color="#0000E3">关于所有可用的配置, 查看 <a class="reference external" href="building.html">building libtorrent</a> 这篇></font></p>
 </div>
 <div class="section" id="reduce-statistics">
 <h2>reduce statistics</h2>
