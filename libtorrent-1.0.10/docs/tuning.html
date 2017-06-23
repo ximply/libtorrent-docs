@@ -308,26 +308,35 @@ relied upon, this should be a simple way to eliminate a little bit of code.</p>
 <p><font color="#0000E3">关于所有可用的配置, 查看 <a class="reference external" href="building.html">building libtorrent</a> 这篇></font></p>
 </div>
 <div class="section" id="reduce-statistics">
-<h2>reduce statistics</h2>
+<h2>reduce statistics(减少统计)</h2>
 <p>You can save some memory for each connection and each torrent by reducing the
 number of separate rates kept track of by libtorrent. If you build with <tt class="docutils literal"><span class="pre">full-stats=off</span></tt>
 (or <tt class="docutils literal"><span class="pre">-DTORRENT_DISABLE_FULL_STATS</span></tt>) you will save a few hundred bytes for each
 connection and torrent. It might make a difference if you have a very large number
 of peers or torrents.</p>
+<p><font color="#0000E3">你可以通过减少 libtorrent 单独保持速率的数目来减少每一个连接和每一个 torrent 的内存使用. 如果你以 <tt class="docutils literal"><span class="pre">full-stats=off</span></tt>
+(或者 <tt class="docutils literal"><span class="pre">-DTORRENT_DISABLE_FULL_STATS</span></tt>)来构建 libtorrent 的话， 对于每个连接和每个 torrent 你将节约几百个字节的内存使用. 如果你有大量 peers 的 torrent 的话， 那么可能会大有不同.</font></p>
 </div>
 </div>
 <div class="section" id="play-nice-with-the-disk">
-<h1>play nice with the disk</h1>
+<h1>play nice with the disk(对磁盘友好)</h1>
 <p>When checking a torrent, libtorrent will try to read as fast as possible from the disk.
 The only thing that might hold it back is a CPU that is slow at calculating SHA-1 hashes,
 but typically the file checking is limited by disk read speed. Most operating systems
 today do not prioritize disk access based on the importance of the operation, this means
 that checking a torrent might delay other disk accesses, such as virtual memory swapping
 or just loading file by other (interactive) applications.</p>
+<p><font color="#0000E3">校验 torrent 时, libtorrent 会尝试尽可能快的从磁盘读取数据.
+唯一能阻止这个的是计算 SHA-1 哈希值时 CPU 慢,
+但是通常文件校验瓶颈在于磁盘读取速度. 目前大部分的操作系统不会基于操作的重要性来对访问磁盘进行优先级排序, 
+这意味着校验 torrent 可能使得其他磁盘访问产生延迟, 例如虚拟内存交换或者只是从其他(不在活动状态的)程序加载文件.</font></p>
 <p>In order to play nicer with the disk, and leave some spare time for it to service other
 processes that might be of higher importance to the end-user, you can introduce a sleep
 between the disc accesses. This is a direct tradeoff between how fast you can check a
 torrent and how soft you will hit the disk.</p>
+<p><font color="#0000E3">为了更友好的使用磁盘, 然后可以节约出更多的时间来服务那些更重要的终端用户的任务, 你可以在磁盘访问期间插入 sleep
+. 在你能够多快的校验一个
+torrent 和你将怎么温柔的使用磁盘之间做直接的权衡.</font></p>
 <p>You control this by setting the <tt class="docutils literal"><span class="pre">session_settings::file_checks_delay_per_block</span></tt> to greater
 than zero. This number is the number of milliseconds to sleep between each read of 16 kiB.</p>
 <p>The sleeps are not necessarily in between each 16 kiB block (it might be read in larger chunks),
