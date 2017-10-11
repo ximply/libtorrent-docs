@@ -334,36 +334,49 @@ or just loading file by other (interactive) applications.</p>
 processes that might be of higher importance to the end-user, you can introduce a sleep
 between the disc accesses. This is a direct tradeoff between how fast you can check a
 torrent and how soft you will hit the disk.</p>
-<p><font color="#0000E3">为了更友好的使用磁盘, 然后可以节约出更多的时间来服务那些更重要的终端用户的任务, 你可以在磁盘访问期间插入 sleep
+<p><font color="#0000E3">为了更友好的使用磁盘, 然后可以节约出更多的时间来服务那些更重要的终端用户的任务, 你可以在磁盘访问期间加入睡眠
 . 在你能够多快的校验一个
 torrent 和你将怎么温柔的使用磁盘之间做直接的权衡.</font></p>
 <p>You control this by setting the <tt class="docutils literal"><span class="pre">session_settings::file_checks_delay_per_block</span></tt> to greater
 than zero. This number is the number of milliseconds to sleep between each read of 16 kiB.</p>
+<p><font color="#0000E3">你可以通过设置 <tt class="docutils literal"><span class="pre">session_settings::file_checks_delay_per_block</span></tt> 为大于零的值来控制它. 该数值表示每次读取 16KB 分块数据之间需要睡眠的毫秒数.</font></p>
 <p>The sleeps are not necessarily in between each 16 kiB block (it might be read in larger chunks),
 but the number will be multiplied by the number of blocks that were read, to maintain the
 same semantics.</p>
+<p><font color="#0000E3">每次读取 16KB 分块数据之间的睡眠操作不是必要的 (因为可能会读取大块的数据),
+只是这个数值会是读取的分块数的倍数, 来保持语义上的一致.</font></p>
 </div>
 <div class="section" id="high-performance-seeding">
-<h1>high performance seeding</h1>
+<h1>high performance seeding(高性能做种)</h1>
 <p>In the case of a high volume seed, there are two main concerns. Performance and scalability.
 This translates into high send rates, and low memory and CPU usage per peer connection.</p>
+<p><font color="#0000E3">就大体积的种子而言, 主要有两个因素. 性能和可扩展性.
+也就是说高速上传, 以及每个连接低内存占用、低CPU消耗.</font></p>
 <div class="section" id="file-pool">
-<h2>file pool</h2>
+<h2>file pool(文件池)</h2>
 <p>libtorrent keeps an LRU file cache. Each file that is opened, is stuck in the cache. The main
 purpose of this is because of anti-virus software that hooks on file-open and file close to
 scan the file. Anti-virus software that does that will significantly increase the cost of
 opening and closing files. However, for a high performance seed, the file open/close might
 be so frequent that it becomes a significant cost. It might therefore be a good idea to allow
 a large file descriptor cache. Adjust this though <tt class="docutils literal"><span class="pre">session_settings::file_pool_size</span></tt>.</p>
+<p><font color="#0000E3">libtorrent 维护着一个 LRU 文件缓存. 每一个打开的文件, 会驻留在这个缓存中. 这么做主要因为病毒防护软件会通过监视文件打开以及关闭来扫描文件. 
+  病毒防护软件会严重增加打开以及关闭文件的消耗. 然而, 对于高性能做种, 文件的开关操作是很频繁的，因此这将是一笔不小的开销. 
+  因为做一个大的文件描述符缓存也许是个不错的主意. 可以通过 <tt class="docutils literal"><span class="pre">session_settings::file_pool_size</span></tt> 这个参数来调整.</font></p>
 <p>Don't forget to set a high rlimit for file descriptors in your process as well. This limit
 must be high enough to keep all connections and files open.</p>
+<p><font color="#0000E3">同时不要忘记设置一个较大的 rlimit 值用于大量的文件描述符资源消耗. 该限制值必须足够用于保持所有的连接以及打开文件.</font></p>
 </div>
 <div class="section" id="disk-cache">
-<h2>disk cache</h2>
+<h2>disk cache(磁盘缓存)</h2>
 <p>You typically want to set the cache size to as high as possible. The
 <tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> is specified in 16 kiB blocks. Since you're seeding,
 the cache would be useless unless you also set <tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt>
 to true.</p>
+<p><font color="#0000E3">You typically want to set the cache size to as high as possible. The
+<tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> is specified in 16 kiB blocks. Since you're seeding,
+the cache would be useless unless you also set <tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt>
+to true.</font></p>
 <p>In order to increase the possibility of read cache hits, set the
 <tt class="docutils literal"><span class="pre">session_settings::cache_expiry</span></tt> to a large number. This won't degrade anything as
 long as the client is only seeding, and not downloading any torrents.</p>
