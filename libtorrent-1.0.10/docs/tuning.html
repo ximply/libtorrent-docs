@@ -373,13 +373,16 @@ must be high enough to keep all connections and files open.</p>
 <tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> is specified in 16 kiB blocks. Since you're seeding,
 the cache would be useless unless you also set <tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt>
 to true.</p>
-<p><font color="#0000E3">You typically want to set the cache size to as high as possible. The
-<tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> is specified in 16 kiB blocks. Since you're seeding,
-the cache would be useless unless you also set <tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt>
-to true.</font></p>
+<p><font color="#0000E3">你通常想尽可能地把缓存设置大一点. 这个缓存大小的参数
+<tt class="docutils literal"><span class="pre">session_settings::cache_size</span></tt> 被指定为 16KB 的分块大小. 一旦要做种,
+这个缓存不会被用到除非你同时设置 <tt class="docutils literal"><span class="pre">session_settings::use_read_cache</span></tt>
+为 true.</font></p>
 <p>In order to increase the possibility of read cache hits, set the
 <tt class="docutils literal"><span class="pre">session_settings::cache_expiry</span></tt> to a large number. This won't degrade anything as
 long as the client is only seeding, and not downloading any torrents.</p>
+<p><font color="#0000E3">为了尽可能地增加读取缓存的命中率, 把缓存过期时间参数
+<tt class="docutils literal"><span class="pre">session_settings::cache_expiry</span></tt> 设置大一点. 这个不会减少任何东西，因为客户端只是在做种, 
+而且没有在下载.</font></p>
 <p>In order to increase the disk cache hit rate, you can enable suggest messages based on
 what's in the read cache. To do this, set <tt class="docutils literal"><span class="pre">session_settings::suggest_mode</span></tt> to
 <tt class="docutils literal"><span class="pre">session_settings::suggest_read_cache</span></tt>. This will send suggest messages to peers
@@ -388,9 +391,17 @@ also enable explicit read cache, by settings <tt class="docutils literal"><span 
 to the number of pieces to keep in the cache. The explicit read cache will make the
 disk read cache stick, and not be evicted by cache misses. The explicit read cache
 will automatically pull in the rarest pieces in the read cache.</p>
+<p><font color="#0000E3">为了增加磁盘缓存命中率, 你可以开启基于读取缓存中的内容的建议模式消息. 可以通过这么做, 设置 <tt class="docutils literal"><span class="pre">session_settings::suggest_mode</span></tt> 为
+<tt class="docutils literal"><span class="pre">session_settings::suggest_read_cache</span></tt> 模式. 对于大部分最近使用过的并且在读取缓存中的分片，这将会发送建议消息给 peers
+. 如果你同时显示得开启读取缓存的话这个特别有用, 
+通过设置 <tt class="docutils literal"><span class="pre">session_settings::explicit_read_cache</span></tt>
+为需要保持在缓存中的分片数. 显示地读取缓存会使
+磁盘固定读取缓存, 而且就算缓存没有命中也不会被剔除. 显示读取缓存
+将自动拉取稀有分片到读取缓存里面来.</font></p>
 <p>Assuming that you seed much more data than you can keep in the cache, to a large
 numbers of peers (so that the read cache wouldn't be useful anyway), this may be a
 good idea.</p>
+<p><font color="#0000E3">假如你做种的数据比缓存中更多, 为大量的 peers (这样不管如何读取缓存没有太大用处), 这可能是个好主意.</font></p>
 <p>When peers first connect, libtorrent will send them a number of allow-fast messages,
 which lets the peers download certain pieces even when they are choked, since peers
 are choked by default, this often triggers immediate requests for those pieces. In the
