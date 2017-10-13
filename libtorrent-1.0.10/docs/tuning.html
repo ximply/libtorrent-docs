@@ -409,11 +409,21 @@ case of using explicit read cache and suggesting those pieces, allowing fast pie
 should be disabled, to not systematically trigger requests for pieces that are not cached
 for all peers. You can turn off allow-fast by settings <tt class="docutils literal"><span class="pre">session_settings::allowed_fast_set_size</span></tt>
 to 0.</p>
+<p><font color="#0000E3">当 peers 首次连接时, libtorrent 将给他们发送一系列的 allow-fast 消息,
+这样即使被阻塞的时候也可以让 peers 下载某些分片, 因为 peers
+是默认被阻塞的, 这样通常会触发立即请求有些分片. 由于显示使用读取缓存和建议下载有些分片, 允许快速请求分片将被禁用, 
+对于所有 peers，为了随机地触发那些没有缓存的分片的请求
+. 你可以关闭 allow-fast 通过设置 <tt class="docutils literal"><span class="pre">session_settings::allowed_fast_set_size</span></tt>
+为 0.</font></p>
 <p>As an alternative to the explicit cache and suggest messages, there's a <em>guided cache</em>
 mode. This means the size of the read cache line that's stored in the cache is determined
 based on the upload rate to the peer that triggered the read operation. The idea being
 that slow peers don't use up a disproportional amount of space in the cache. This
 is enabled through <tt class="docutils literal"><span class="pre">session_settings::guided_read_cache</span></tt>.</p>
+<p><font color="#0000E3">显示的缓存和建议消息作为可配置项, 有一个 <em>guided cache</em>
+模式. 这意味着存储在中的读取缓存的大小的基准线会
+根据上传到 peer 的速度来决定触发缓存读取操作. 这样会变成慢速的 peers 不能在缓存中使用不成比例的空间. 这个
+ <tt class="docutils literal"><span class="pre">session_settings::guided_read_cache</span></tt> 配置始终会被开起来.</font></p>
 <p>In cases where the assumption is that the cache is only used as a read-ahead, and that no
 other peer will ever request the same block while it's still in the cache, the read
 cache can be set to be <em>volatile</em>. This means that every block that is requested out of
@@ -424,6 +434,13 @@ strategies for the read cache. You don't want to on one hand attract peers to re
 the same pieces, and on the other hand assume that they won't request the same pieces
 and drop them when the first peer requests it. To enable volatile read cache, set
 <tt class="docutils literal"><span class="pre">session_settings::volatile_read_cache</span></tt> to true.</p>
+<p><font color="#0000E3">假设缓存仅仅只是作为预读取使用的话, 那么没有
+其他 peer 会永远请求缓存中相同的分块, 读取缓存可以设置成
+ <em>volatile</em>. 这意味着每个分块从缓存中请求完成后会被立即删除. 这可以节约大量的缓存空间
+然后可以用于其他 peers 的预读取. 这个模式永远不该 <strong>never</strong> 和
+ <tt class="docutils literal">explicit_read_cache</tt> 或者 <tt class="docutils literal">suggest_read_cache</tt> 一起使用, 因为对于读取缓存来说是互相矛盾的策略. 
+ 你不能一边让 peers 来请求相同的分片, 然后又一边假设他们不会请求相同的分片然后当第一个 peer 请求完这个分片后就丢弃它. 要开启实时读取缓存的功能的话, 可以设置
+<tt class="docutils literal"><span class="pre">session_settings::volatile_read_cache</span></tt> 为 true.</font></p>
 </div>
 <div class="section" id="utp-tcp-mixed-mode">
 <h2>uTP-TCP mixed mode</h2>
