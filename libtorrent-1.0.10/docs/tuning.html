@@ -443,7 +443,7 @@ and drop them when the first peer requests it. To enable volatile read cache, se
 <tt class="docutils literal"><span class="pre">session_settings::volatile_read_cache</span></tt> 为 true.</font></p>
 </div>
 <div class="section" id="utp-tcp-mixed-mode">
-<h2>uTP-TCP mixed mode</h2>
+<h2>uTP-TCP mixed mode(uTP-TCP 混合模式)</h2>
 <p>libtorrent supports <a class="reference external" href="utp.html">uTP</a>, which has a delay based congestion controller. In order to
 avoid having a single TCP bittorrent connection completely starve out any uTP connection,
 there is a mixed mode algorithm. This attempts to detect congestion on the uTP peers and
@@ -456,39 +456,70 @@ This setting entirely disables the balancing and unthrottles all connections. On
 home connection, this would mean that none of the benefits of uTP would be preserved
 (the modem's send buffer would be full at all times) and uTP connections would for the most
 part be squashed by the TCP traffic.</p>
+<p><font color="#0000E3">libtorrent 支持 <a class="reference external" href="utp.html">uTP</a>, 会有基于拥塞控制的延迟. 为了避免
+   只有单一的 TCP bittorrent 连接而完全忽略其他任何的 uTP 连接,
+所以才有混合模式的算法. 意图在于检测 uTP peers 的拥塞然后
+调节 TCP 连接来避免占用所有带宽. 这会在两种协议之间均衡带宽资源. 
+当运行在一个实际带宽无限的网络下, 这个算法不再需要了, 甚至可能会影响吞吐量. 
+建议对
+<tt class="docutils literal"><span class="pre">session_setting::mixed_mode_algorithm</span></tt> 进行测试, 设置为 <tt class="docutils literal"><span class="pre">session_settings::prefer_tcp</span></tt>.
+这个设置会完全禁用均衡而且不限制所有链接. 通常在家用宽带的连接上, 
+这意味着 uTP 不会有任何好处
+(调制解调器的发送缓冲区会一直处于填满状态) 然后 uTP 连接大部分会被 TCP 流量占据.</font></p>
 </div>
 <div class="section" id="send-buffer-low-watermark">
-<h2>send buffer low watermark</h2>
+<h2>send buffer low watermark(低水位的发送缓冲)</h2>
 <p>libtorrent uses a low watermark for send buffers to determine when a new piece should
 be requested from the disk I/O subsystem, to be appended to the send buffer. The low
 watermark is determined based on the send rate of the socket. It needs to be large
 enough to not draining the socket's send buffer before the disk operation completes.</p>
+<p><font color="#0000E3">libtorrent 使用一个低水位的缓冲区来决定何时从磁盘 I/O 子系统中请求一个新的分片, 
+  然后追加到发送缓冲区. 低水位
+检测基于套接字的发送速率. 速率要够大以至于在磁盘操作完成之前不会耗尽套接字的发送缓冲区.</font></p>
 <p>The watermark is bound to a max value, to avoid buffer sizes growing out of control.
 The default max send buffer size might not be enough to sustain very high upload rates,
 and you might have to increase it. It's specified in bytes in
 <tt class="docutils literal"><span class="pre">session_settings::send_buffer_watermark</span></tt>.</p>
+<p><font color="#0000E3">水位一定得是一个最大值, 以避免缓冲区大小增长失控.
+默认的最大的发送缓冲区大小可能不够支撑很高的上传速率,
+所以你可能不得不增加它的大小. 可以通过
+<tt class="docutils literal"><span class="pre">session_settings::send_buffer_watermark</span></tt> 来指定(以字节为单位).</font></p>
 </div>
 <div class="section" id="peers">
 <h2>peers</h2>
 <p>First of all, in order to allow many connections, set the global connection limit
 high, <tt class="docutils literal"><span class="pre">session::set_max_connections()</span></tt>. Also set the upload rate limit to
 infinite, <tt class="docutils literal"><span class="pre">session::set_upload_rate_limit()</span></tt>, passing 0 means infinite.</p>
+<p><font color="#0000E3">首先, 为了支持大量连接, 把全局连接限制设置高, 
+  <tt class="docutils literal"><span class="pre">session::set_max_connections()</span></tt>. 同时设置上传速率限制为无限大
+, <tt class="docutils literal"><span class="pre">session::set_upload_rate_limit()</span></tt>, 传 0 表示无限大.</font></p>
 <p>When dealing with a large number of peers, it might be a good idea to have slightly
 stricter timeouts, to get rid of lingering connections as soon as possible.</p>
+<p><font color="#0000E3">当处理大量 peers 时, 为了尽可能地避免推迟断开的连接，有严格的超时是不错的主意.</font></p>
 <p>There are a couple of relevant settings: <tt class="docutils literal"><span class="pre">session_settings::request_timeout</span></tt>,
 <tt class="docutils literal"><span class="pre">session_settings::peer_timeout</span></tt> and <tt class="docutils literal"><span class="pre">session_settings::inactivity_timeout</span></tt>.</p>
+<p><font color="#0000E3">有一些相关的设置: <tt class="docutils literal"><span class="pre">session_settings::request_timeout</span></tt>,
+<tt class="docutils literal"><span class="pre">session_settings::peer_timeout</span></tt> 和 <tt class="docutils literal"><span class="pre">session_settings::inactivity_timeout</span></tt>.</font></p>
 <p>For seeds that are critical for a delivery system, you most likely want to allow
 multiple connections from the same IP. That way two people from behind the same NAT
 can use the service simultaneously. This is controlled by
 <tt class="docutils literal"><span class="pre">session_settings::allow_multiple_connections_per_ip</span></tt>.</p>
+<p><font color="#0000E3">对于种子，对于一个分发系统而言那是很关键的, 你很有可能会接受来自同一个 IP 的多个连接
+. 这样的话两个来自同一个 NAT 的人可以同时地使用服务. 这个通过
+<tt class="docutils literal"><span class="pre">session_settings::allow_multiple_connections_per_ip</span></tt> 来控制.</font></p>
 <p>In order to always unchoke peers, turn off automatic unchoke
 <tt class="docutils literal"><span class="pre">session_settings::auto_upload_slots</span></tt> and set the number of upload slots to a large
 number via <tt class="docutils literal"><span class="pre">session::set_max_uploads()</span></tt>, or use -1 (which means infinite).</p>
+<p><font color="#0000E3">为了总是疏通 peers, 关闭自动疏通
+<tt class="docutils literal"><span class="pre">session_settings::auto_upload_slots</span></tt> 同时设置上传通道数为一个较大的值通过
+ <tt class="docutils literal"><span class="pre">session::set_max_uploads()</span></tt>, 或者使用 -1 (意味着无限大).</font></p>
 </div>
 <div class="section" id="torrent-limits">
-<h2>torrent limits</h2>
+<h2>torrent limits(torrent 限制)</h2>
 <p>To seed thousands of torrents, you need to increase the <tt class="docutils literal"><span class="pre">session_settings::active_limit</span></tt>
 and <tt class="docutils literal"><span class="pre">session_settings::active_seeds</span></tt>.</p>
+<p><font color="#0000E3">为了做种成千上万个 torrents, 你需要增加 <tt class="docutils literal"><span class="pre">session_settings::active_limit</span></tt>
+和 <tt class="docutils literal"><span class="pre">session_settings::active_seeds</span></tt> 的大小.</font></p>
 </div>
 </div>
 <div class="section" id="scalability">
