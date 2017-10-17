@@ -523,7 +523,7 @@ and <tt class="docutils literal"><span class="pre">session_settings::active_seed
 </div>
 </div>
 <div class="section" id="scalability">
-<h1>scalability</h1>
+<h1>scalability(伸缩性)</h1>
 <p>In order to make more efficient use of the libtorrent interface when running a large
 number of torrents simultaneously, one can use the <tt class="docutils literal"><span class="pre">session::get_torrent_status()</span></tt> call
 together with <tt class="docutils literal"><span class="pre">session::refresh_torrent_status()</span></tt>. Keep in mind that every call into
@@ -537,6 +537,16 @@ and run a provided predicate function to determine whether or not to include it 
 the returned vector. If you have a lot of torrents, you might want to update the status
 of only certain torrents. For instance, you might only be interested in torrents that
 are being downloaded.</p>
+<p><font color="#0000E3">为了更高效地使用 libtorrent 接口来当同时运行大量 torrents, 
+  可以使用 <tt class="docutils literal"><span class="pre">session::get_torrent_status()</span></tt> 与 <tt class="docutils literal"><span class="pre">session::refresh_torrent_status()</span></tt> 一起调用. 要记住，每一次调用
+libtorrent 然后需要返回某些值， 不得不阻塞你的线程同时投递消息到
+网络主线程然后等待响应(那些不必返回任何数据的调用将简单地投递一下消息然后就立即返回了
+). 这个时间花费可能会变得重要， 一旦你有几百个 torrents (基于对每个 torrent 的调用频次). 
+<tt class="docutils literal">get_torrent_status</tt> 让你在单次调用中查询所有 torrents 的状态. 
+这个实际上会轮询所有 torrents
+然后执行一个既定的函数来检测是否包含在返回的 vector 里面
+. 如果你有大量的 torrents, 你可能想更新指定的某些 torrents 的状态. 
+例如, 你只对正在下载的 torrents 感兴趣.</font></p>
 <p>The intended use of these functions is to start off by calling <tt class="docutils literal">get_torrent_status</tt>
 to get a list of all torrents that match your criteria. Then call <tt class="docutils literal">refresh_torrent_status</tt>
 on that list. This will only refresh the status for the torrents in your list, and thus
@@ -545,10 +555,19 @@ time, especially if the number of torrents you're interested in is small. In ord
 keep your list of interested torrents up to date, you can either call <tt class="docutils literal">get_torrent_status</tt>
 from time to time, to include torrents you might have become interested in since the last
 time. In order to stop refreshing a certain torrent, simply remove it from the list.</p>
+<p><font color="#0000E3">这些函数的用途是开始时调用 <tt class="docutils literal">get_torrent_status</tt>
+来获取所有的满足你的条件的 torrents 列表. 调用 <tt class="docutils literal">refresh_torrent_status</tt>
+作用于刚才那个列表. 这样只会更新你刚才的列表中的 torrent 的状态, 然后忽略其它 torrents. 这会节约大量时间, 
+特别是你感兴趣的 torrent 很少的时候. 为了
+你感兴趣的 torrents 列表状态最新, 你可以间歇性调用 <tt class="docutils literal">get_torrent_status</tt>
+, 来获取你感兴趣的 torrents 的最后一次状态. 想要停止刷新某个 torrent 的话, 只要简单地从列表中移除即可.</font></p>
 <p>A more efficient way however, would be to subscribe to status alert notifications, and
 update your list based on these alerts. There are alerts for when torrents are added, removed,
 paused, resumed, completed etc. Doing this ensures that you only query status for the
 minimal set of torrents you are actually interested in.</p>
+<p><font color="#0000E3">还有一种更有效的方式, 可以订阅 torrent 状态变更通知, 然后你
+可以根据这些通知更新你的列表. 还有其他一些通知消息， 例如 torrents 的添加, 删除,
+暂停, 恢复, 完成等. 这样做确保了你只查询你实际感兴趣的 torrents 的状态.</font></p>
 </div>
 <div class="section" id="benchmarking">
 <h1>benchmarking</h1>
