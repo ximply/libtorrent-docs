@@ -570,17 +570,24 @@ minimal set of torrents you are actually interested in.</p>
 暂停, 恢复, 完成等. 这样做确保了你只查询你实际感兴趣的 torrents 的状态.</font></p>
 </div>
 <div class="section" id="benchmarking">
-<h1>benchmarking</h1>
+<h1>benchmarking(基准测试)</h1>
 <p>There is a bunch of built-in instrumentation of libtorrent that can be used to get an insight
 into what it's doing and how well it performs. This instrumentation is enabled by defining
 preprocessor symbols when building.</p>
+<p><font color="#0000E3">libtorrent 有一系列的自带工具可用于深入了解它在做什么以及性能有多好. 
+  这个工具可以在构建的时候通过定义预处理符号来开启.</font></p>
 <p>There are also a number of scripts that parses the log files and generates graphs (requires
 gnuplot and python).</p>
+<p><font color="#0000E3">有一些脚本可以解析日志文件然后生成图片 (需要
+gnuplot 和 python).</font></p>
 <div class="section" id="disk-metrics">
-<h2>disk metrics</h2>
+<h2>disk metrics(磁盘性能度量指标)</h2>
 <p>To enable disk I/O instrumentation, define <tt class="docutils literal">TORRENT_DISK_STATS</tt> when building. When built
 with this configuration libtorrent will create three log files, measuring various aspects of
 the disk I/O. The following table is an overview of these files and what they measure.</p>
+<p><font color="#0000E3">要开启磁盘 I/O 工具的话, 可以在构建时定义 <tt class="docutils literal">TORRENT_DISK_STATS</tt>. 构建时
+添加这个配置项 libtorrent 将生成三个日志文件, 来全方位衡量磁盘 I/O. 
+下表中是对这三个文件所衡量的东西的简要说明.</font></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="30%" />
@@ -597,12 +604,21 @@ the disk I/O. The following table is an overview of these files and what they me
 engaged in, with timestamps. This tells you what the thread
 is spending its time doing.</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">这个是当前繁忙的磁盘 I/O 线程的操作日志, 包括时间戳. 这个会告诉你线程正在花时间做什么.</font></td>
+</tr>
 <tr><td><tt class="docutils literal">disk_buffers.log</tt></td>
 <td>This log keeps track of what the buffers allocated from the
 disk buffer pool are used for. There are 5 categories.
 receive buffer, send buffer, write cache, read cache and
 temporary hash storage. This is key when optimizing memory
 usage.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">这个日志时刻跟踪
+从磁盘缓冲池申请缓冲空间的情况以及使用类别情况. 有5种类别.
+接收缓冲, 发送缓冲, 写入缓存, 读取缓存和
+临时哈希存储. 优化内存使用的时候这个很关键.</font></td>
 </tr>
 <tr><td><tt class="docutils literal">disk_access.log</tt></td>
 <td>This is a low level log of read and write operations, with
@@ -612,6 +628,11 @@ case of a multi-file torrent). This can be used as an
 estimate of the physical drive location. The purpose of
 this log is to identify the amount of seeking the drive has
 to do.</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">这是一个低级的读写操作日志, 包含时间戳
+和文件偏移量. 文件偏移量特指 torrent 中的字节偏移量 (不是常规的文件, 因为有多个文件的 torrent 的情况). 这个可用于物理磁盘位置的估算.
+这个日志的意图是标记不得不做的磁盘驱动寻道量.</font></td>
 </tr>
 </tbody>
 </table>
