@@ -748,16 +748,22 @@ file, <tt class="docutils literal">disk_access.gnuplot</tt> which assumes <tt cl
 </div>
 </div>
 <div class="section" id="session-stats">
-<h2>session stats</h2>
+<h2>session stats(会话状态)</h2>
 <p>By defining <tt class="docutils literal">TORRENT_STATS</tt> libtorrent will write a log file called <tt class="docutils literal"><span class="pre">session_stats/&lt;pid&gt;.&lt;sequence&gt;.log</span></tt> which
 is in a format ready to be passed directly into gnuplot. The parser script <tt class="docutils literal">parse_session_stats.py</tt>
 generates a report in <tt class="docutils literal">session_stats_report/index.html</tt>.</p>
+<p><font color="#0000E3">通过定义 <tt class="docutils literal">TORRENT_STATS</tt> libtorrent 会写入一个叫做 <tt class="docutils literal"><span class="pre">session_stats/&lt;pid&gt;.&lt;sequence&gt;.log</span></tt> 的日志文件，它
+的格式直接适用于 gnuplot. 解析脚本 <tt class="docutils literal">parse_session_stats.py</tt>
+会生成一个报告于 <tt class="docutils literal">session_stats_report/index.html</tt> 中.</font></p>
 <p>The first line in the log contains all the field names, separated by colon:</p>
+<p><font color="#0000E3">日止的第一行包含所有的字段名称, 以冒号分隔:</font></p>
 <pre class="literal-block">
 second:upload rate:download rate:downloading torrents:seeding torrents:peers...
 </pre>
 <p>The rest of the log is one line per second with all the fields' values.</p>
+<p><font color="#0000E3">其余日志每秒产生一行，这一行包括所有字段的值.</font></p>
 <p>These are the fields:</p>
+<p><font color="#0000E3">字段如下:</font></p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="25%" />
@@ -772,71 +778,122 @@ second:upload rate:download rate:downloading torrents:seeding torrents:peers...
 <tr><td>second</td>
 <td>the time, in seconds, for this log line</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">时间, 秒数, 对应一行日志</font></td>
+</tr>
 <tr><td>upload rate</td>
 <td>the number of bytes uploaded in the last second</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">最后一秒上传的字节数</font></td>
 </tr>
 <tr><td>download rate</td>
 <td>the number of bytes downloaded in the last second</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">最后一秒下载的字节数</font></td>
+</tr>
 <tr><td>downloading torrents</td>
 <td>the number of torrents that are not seeds</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">非种子的 torrents 数量</font></td>
 </tr>
 <tr><td>seeding torrents</td>
 <td>the number of torrents that are seed</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">做种的 torrents 数量</font></td>
+</tr>
 <tr><td>peers</td>
 <td>the total number of connected peers</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">已连接的 peers 数量</font></td>
 </tr>
 <tr><td>connecting peers</td>
 <td>the total number of peers attempting to connect (half-open)</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">尝试连接的 peers 数量 (半开连接的)</font></td>
+</tr>
 <tr><td>disk block buffers</td>
 <td>the total number of disk buffer blocks that are in use</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">正在使用的磁盘缓冲块</font></td>
 </tr>
 <tr><td>unchoked peers</td>
 <td>the total number of unchoked peers</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">非阻塞的 peers 数量</font></td>
+</tr>
 <tr><td>num list peers</td>
 <td>the total number of known peers, but not necessarily connected</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">已知的 peers 数量, 但不一定是已连接的</font></td>
 </tr>
 <tr><td>peer allocations</td>
 <td>the total number of allocations for the peer list pool</td>
 </tr>
+<tr><td></td>
+<td><font color="#0000E3">peer 列表池配额</font></td>
+</tr>
 <tr><td>peer storage bytes</td>
 <td>the total number of bytes allocated for the peer list pool</td>
+</tr>
+<tr><td></td>
+<td><font color="#0000E3">peer 列表池配额字节数</font></td>
 </tr>
 </tbody>
 </table>
 <p>This is an example of a graph that can be generated from this log:</p>
+<p><font color="#0000E3">这是一个可以从日志生成图片的例子:</font></p>
 <img alt="session_stats_peers.png" src="session_stats_peers.png" />
 <p>It shows statistics about the number of peers and peers states. How at the startup
 there are a lot of half-open connections, which tapers off as the total number of
 peers approaches the limit (50). It also shows how the total peer list slowly but steadily
 grows over time. This list is plotted against the right axis, as it has a different scale
 as the other fields.</p>
+<p><font color="#0000E3">图中展示了 peers 数量和 peers 状态的统计数据. 启动时有大量的半开连接
+, 然后因为达到 peers 数量限制值(50)而逐渐减少. 图中也展示了总体的 peer 列表随着时间缓慢持续地增长. 
+这个列表在右边的坐标轴, 因为它的比例尺和其他字段不一样.</font></p>
 </div>
 </div>
 <div class="section" id="understanding-the-disk-thread">
-<h1>understanding the disk thread</h1>
+<h1>understanding the disk thread(理解磁盘线程)</h1>
 <p>All disk operations are funneled through a separate thread, referred to as the disk thread.
 The main interface to the disk thread is a queue where disk jobs are posted, and the results
 of these jobs are then posted back on the main thread's io_service.</p>
+<p><font color="#0000E3">所有的磁盘操作全由一个单独的线程来完成, 所谓的磁盘线程.
+磁盘线程的主要接口是一个可以投递任务的队列, 然后这些任务的结果
+会被投递回主线程的 io_service.</font></p>
 <p>A disk job is essentially one of:</p>
+<p><font color="#0000E3">磁盘任务本质上是:</font></p>
 <ol class="arabic simple">
 <li>write this block to disk, i.e. a write job. For the most part this is just a matter of sticking the block in the disk cache, but if we've run out of cache space or completed a whole piece, we'll also flush blocks to disk. This is typically very fast, since the OS just sticks these buffers in its write cache which will be flushed at a later time, presumably when the drive head will pass the place on the platter where the blocks go.</li>
+<p><font color="#0000E3">写入分块到磁盘, i.e. 写操作. 基本上这只是持久化磁盘缓存中分块的事, 但是一旦我们超出缓存空间大小或者下载完成一个分片, 我们也会将分块刷到磁盘. 这通常很快, 因为操作系统只是在写入缓存中持久化这些缓冲区然后随后刷到磁盘, 大概是当磁头经过分块所在扇区时.</font></p>
 <li>read this block from disk. The first thing that happens is we look in the cache to see if the block is already in RAM. If it is, we'll return immediately with this block. If it's a cache miss, we'll have to hit the disk. Here we decide to defer this job. We find the physical offset on the drive for this block and insert the job in an ordere queue, sorted by the physical location. At a later time, once we don't have any more non-read jobs left in the queue, we pick one read job out of the ordered queue and service it. The order we pick jobs out of the queue is according to an elevator cursor moving up and down along the ordered queue of read jobs. If we have enough space in the cache we'll read read_cache_line_size number of blocks and stick those in the cache. This defaults to 32 blocks.</li>
+<p><font color="#0000E3">从磁盘读取分块. 首先会发生的事是先看下分块是不是已经在内存中. 如果是, 我们会立即返回该分块. 如果没有, 我们回去磁盘中取. 这就是我们打算要定义的任务. 我们查找这个分块在驱动器的物理偏移然后将这个任务插入到一个有序队列中, 按物理位置排序. 过一段时间后, 当队列中没有非读取的任务时, 我们会从这个有序队列中取出一个读取任务然后执行该任务. 我们从队列中取任务的顺序是通过一个在这个有序的读取任务的队列中上下移动的光标来完成的. 如果缓存中有足够的空间， 则会读取 read_cache_line_size 数量的分块然后把它们保留在缓存中. 默认是32个分块.</font></p>
 </ol>
 <p>Other disk job consist of operations that needs to be synchronized with the disk I/O, like renaming files, closing files, flushing the cache, updating the settings etc. These are relatively rare though.</p>
+<p><font color="#0000E3">其它磁盘任务包括操作需要和磁盘 I/O 进行同步, 例如重命名文件, 关闭文件, 刷缓存, 更新设置等. 这些虽然比较少见.</font></p>
 </div>
 <div class="section" id="contributions">
-<h1>contributions</h1>
+<h1>contributions(贡献)</h1>
 <p>If you have added instrumentation for some part of libtorrent that is not covered here, or
 if you have improved any of the parser scrips, please consider contributing it back to the
 project.</p>
+<p><font color="#0000E3">如果你增加了 libtorrent 的某些说明但是还没覆盖到这里, 或者
+你优化了解析脚本, 欢迎贡献到这个项目中来.</font></p>
 <p>If you have run tests and found that some algorithm or default value in libtorrent is
 suboptimal, please contribute that knowledge back as well, to allow us to improve the library.</p>
+<p><font color="#0000E3">如果你运行了一些测试然后发现 libtorrent 中一些算法或者默认值不是最优的, 请反馈回来, 让我们来优化这个库.</font></p>
 <p>If you have additional suggestions on how to tune libtorrent for any specific use case,
 please let us know and we'll update this document.</p>
+<p><font color="#0000E3">如果你有其他关于如何在任何特定使用场景下调优 libtorrent 的建议, 请告知我们, 我们会完善文档.</font></p>
 </div>
 
     </div>
